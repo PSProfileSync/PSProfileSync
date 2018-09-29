@@ -21,13 +21,13 @@
     GUID              = '61c9dc4b-5ab8-4371-b2ce-608ae770919d'
 
     # Author of this module
-    Author            = 'Constantin Hager, Johannes Kümmel'
+    Author            = 'Constantin Hager, Johannes K?mmel'
 
     # Company or vendor of this module
     CompanyName       = 'Unknown'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2018 Constantin Hager, Johannes Kümmel. All rights reserved.'
+    Copyright         = '(c) 2018 Constantin Hager, Johannes K?mmel. All rights reserved.'
 
     # Description of the functionality provided by this module
     # Description = ''
@@ -69,7 +69,11 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = '*'
+    FunctionsToExport = @(
+        "Import-PSProfile",
+        "Push-PSProfile",
+        "Invoke-PSGitHubApi"
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = '*'
