@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>PSProfileSync</id>
+    <version>1.0.0</version>
+    <authors>Constantin Hager</authors>
+    <owners>Constantin Hager</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Module to demonstrate build pipeline with binary bits</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>PSModule</tags>
+  </metadata>
+</package>
