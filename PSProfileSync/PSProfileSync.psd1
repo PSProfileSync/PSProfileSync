@@ -21,13 +21,13 @@
     GUID              = '61c9dc4b-5ab8-4371-b2ce-608ae770919d'
 
     # Author of this module
-    Author            = 'Constantin Hager, Johannes K?mmel'
+    Author            = 'Constantin Hager, Johannes Kuemmel'
 
     # Company or vendor of this module
     CompanyName       = 'Unknown'
 
     # Copyright statement for this module
-    Copyright         = '(c) 2018 Constantin Hager, Johannes K?mmel. All rights reserved.'
+    Copyright         = '(c) 2018 Constantin Hager, Johannes Kuemmel. All rights reserved.'
 
     # Description of the functionality provided by this module
     # Description = ''
