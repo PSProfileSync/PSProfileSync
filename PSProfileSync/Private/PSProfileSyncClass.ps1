@@ -1,5 +1,4 @@
 using namespace System
-using namespace System.Text
 
 enum MethodEnum
 {
@@ -13,7 +12,7 @@ class PSProfileSync
     [string]$UserName
     [string]$PATToken
     [string]$PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
-    [string]$PSProfileSyncFullPath = (Join-Path -Path $this.PSProfileSyncPath -ChildPath "GitAuthFile.xml")
+    [string]$PSProfileSyncFullPath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
     [string]$GistDescription = "PSProfileSync"
 
     PSProfileSync($UserName, $PATToken)
