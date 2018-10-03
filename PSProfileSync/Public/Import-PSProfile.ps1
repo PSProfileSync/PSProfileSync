@@ -5,5 +5,5 @@ function Import-PSProfile
 
     )
 
-    $PathAuthFile = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
+    #$PathAuthFile = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
 }

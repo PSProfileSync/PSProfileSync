@@ -5,7 +5,7 @@ function Push-PSProfile
 
     )
 
-    $PathAuthFile = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
+    <# $PathAuthFile = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
 
     if (Test-PSForGitAuthFile -PathAuthFile $PathAuthFile)
     {
@@ -14,5 +14,5 @@ function Push-PSProfile
     else
     {
 
-    }
+    } #>
 }
