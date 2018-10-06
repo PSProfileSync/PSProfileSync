@@ -21,6 +21,7 @@ class PSProfileSync
         $this.PATToken = $PATToken
     }
 
+    #region GitHub Rest
     # Get Implementation for the GitHubApi
     [Object[]] CallGitHubApiGET([string]$Uri, [MethodEnum]$Method)
     {
@@ -41,28 +42,14 @@ class PSProfileSync
         return $result
     }
 
-    [pscustomobject] NewAuthFileObject([string]$GistId)
+    [Object[]] SearchGitHubGist([object[]]$AllUserGists)
     {
-        # Build the credential object
-        $PATTokenSecure = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
-        $GitHubCredential = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $PATTokenSecure)
-
-        # Create the object for the file
-        $FileObject = [PSCustomObject]@{
-            GitHubCredential = $GitHubCredential
-            GistId           = $GistId
-        }
-        return $FileObject
-    }
-
-    [void] CreateGitAuthFile([pscustomobject]$AuthFileObject)
-    {
-        If (-not($this.TestForGitAuthFile($this.PSProfileSyncPath)))
+        $Gist = ($AllUserGists).where{$_.description -eq $this.GistDescription}
+        if ($Gist)
         {
-            New-Item -ItemType Directory -Force -Path $this.PSProfileSyncPath
+            return $Gist
         }
-
-        $AuthFileObject | Export-Clixml -Path $this.PSProfileSyncFullPath -Force
+        return $null
     }
 
     [string] CreateGitHubGist()
@@ -70,11 +57,12 @@ class PSProfileSync
         # Test if gist already exist
         $Uri = ("https://api.github.com/users/{0}/gists" -f $this.UserName)
         $AllUserGists = $this.CallGitHubApiGET($Uri, "GET")
+        $Gist = $this.SearchGitHubGist($AllUserGists)
 
-        if (($AllUserGists).where{$_.description -eq $this.GistDescription})
+        if ($Gist)
         {
             Write-Output -InputObject "Gist is already available. No action needed."
-            $GistId = (($AllUserGists).where{$_.description -eq $this.GistDescription}).id
+            $GistId = $Gist.id
         }
         else
         {
@@ -96,6 +84,43 @@ class PSProfileSync
 
         return $GistId
     }
+    #endregion
+
+    #region Settings File methods
+    [pscustomobject] NewAuthFileObject([string]$GistId)
+    {
+        # Build the credential object
+        $PATTokenSecure = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
+        $GitHubCredential = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $PATTokenSecure)
+
+        # Create the object for the file
+        $FileObject = [PSCustomObject]@{
+            GitHubCredential = $GitHubCredential
+            GistId           = $GistId
+        }
+        return $FileObject
+    }
+
+    [void] CreateGitAuthFile([pscustomobject]$AuthFileObject, [string]$Path = $this.PSProfileSyncFullPath)
+    {
+        If (-not($this.TestForGitAuthFile($Path)))
+        {
+            New-Item -ItemType Directory -Force -Path $this.PSProfileSyncPath
+        }
+
+        $AuthFileObject | Export-Clixml -Path $this.PSProfileSyncFullPath -Force
+    }
+
+    [PSCustomObject] ImportGitAuthFile([string]$XmlPath = $this.PSProfileSyncFullPath)
+    {
+        $XmlFile = Import-Clixml -Path $XmlPath
+        $returnObject = [PSCustomObject]@{
+            UserName = $XmlFile.GitHubCredential.UserName
+            PATToken = $XmlFile.GitHubCredential.GetNetworkCredential().Password
+            GistId   = $XmlFile.GistId
+        }
+        return $returnObject
+    }
 
     [bool] TestForGitAuthFile([string]$PathAuthFile)
     {
@@ -108,4 +133,5 @@ class PSProfileSync
             return $false
         }
     }
+    #endregion
 }

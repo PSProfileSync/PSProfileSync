@@ -43,6 +43,47 @@ InModuleScope PSProfileSync {
             }
         }
 
+        Context "CreateGitHubGist" {
+            It "Creates a GitHub gist successfully" {
+                Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
+                $result | Should -Be "Success"
+                Mock -CommandName Write-Output -MockWith {return $true}
+                $PSProfileSyncClass.CreateGitHubGist()
+                Assert-MockCalled -CommandName Write-Output -Exactly 1
+            }
+
+            It "GitHub gist exists already and returns a valid gist id" {
+                Mock -CommandName Invoke-RestMethod -MockWith {return @{
+                        description = "PSProfileSync"
+                        id          = "00000"
+                    }
+                }
+                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
+                $result | Should -Be $true
+                Mock -CommandName Write-Output -MockWith {"Write-Output was called"}
+                $result = $PSProfileSyncClass.CreateGitHubGist()
+                $result | Should -Be "00000"
+                Assert-MockCalled -CommandName Write-Output -Exactly 2
+            }
+        }
+
+        Context "SearchGitHubGist" {
+            It "Git Gist exists" {
+                $GistExist = [System.Object]@{
+                    Description = "PSProfileSync"
+                }
+                $return = $PSProfileSyncClass.SearchGitHubGist($GistExist)
+                $return | Should -BeOfType System.Object
+            }
+
+            It "Git Gist does not exist" {
+                $GistNotExist = $null
+                $return = $PSProfileSyncClass.SearchGitHubGist($GistNotExist)
+                $return | Should -BeNullOrEmpty
+            }
+        }
+
         Context "TestForGitAuthFile" {
             Context "Path to Git Authfile exist" {
                 Mock -CommandName Test-Path -MockWith {return $true}
@@ -76,39 +117,47 @@ InModuleScope PSProfileSync {
             It "If path does not exist, It will be created" {
                 Mock -CommandName Export-Clixml -MockWith {"Export-Clixml was called"}
                 Mock -CommandName New-Item -MockWith {return $null}
-
+                $Path = "TestDrive:\MyPath"
                 $obj = [PSCustomObject]@{
                     Name = "Value"
                 }
 
-                $return = $PSProfileSyncClass.CreateGitAuthFile($obj)
+                $return = $PSProfileSyncClass.CreateGitAuthFile($obj, $Path)
                 $return | Should -be $null
                 Assert-MockCalled -CommandName New-Item -Exactly 1
             }
         }
 
-        Context "CreateGitHubGist" {
-            It "Creates a GitHub gist successfully" {
-                Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
-                $result | Should -Be "Success"
-                Mock -CommandName Write-Output -MockWith {return $true}
-                $PSProfileSyncClass.CreateGitHubGist()
-                Assert-MockCalled -CommandName Write-Output -Exactly 1
-            }
-
-            It "GitHub gist exists already and returns a valid gist id" {
-                Mock -CommandName Invoke-RestMethod -MockWith {return @{
-                        description = "PSProfileSync"
-                        id          = "00000"
+        Context "ImportGitAuthFile" {
+            $testcred = New-MockObject -Type 'System.Management.Automation.PSCredential'
+            $AddMemberParams = @{
+                MemberType = 'ScriptMethod'
+                Name       = 'GetNetworkCredential'
+                Value      = {
+                    @{
+                        'Password' = $PatToken
                     }
                 }
-                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
-                $result | Should -Be $true
-                Mock -CommandName Write-Output -MockWith {"Write-Output was called"}
-                $result = $PSProfileSyncClass.CreateGitHubGist()
-                $result | Should -Be "00000"
-                Assert-MockCalled -CommandName Write-Output -Exactly 2
+                Force      = $true
+            }
+
+            $testcred | Add-Member @AddMemberParams
+            $testcred | Add-Member -MemberType NoteProperty -Name 'UserName' -Value $UserName -Force
+
+            $obj = [PSCustomObject]@{
+                GistId           = $GistId
+                GitHubCredential = $testcred
+            }
+            $obj | Export-Clixml -Path "TestDrive:\Test.xml"
+            $XmlPath = "TestDrive:\Test.xml"
+
+            It "Returns PSCustomObject" {
+                mock -CommandName 'Import-Clixml' -MockWith {return $obj}
+                $returnvalue = $PSProfileSyncClass.ImportGitAuthFile($XmlPath)
+                $returnvalue | Should -BeOfType System.Management.Automation.PSCustomObject
+                $returnvalue.GistId | Should -BeExactly $GistId
+                $returnvalue.UserName | Should -BeExactly $UserName
+                $returnvalue.PATToken | Should -BeExactly $PatToken
             }
         }
     }
