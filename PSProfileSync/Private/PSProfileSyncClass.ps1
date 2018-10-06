@@ -14,6 +14,18 @@ class PSProfileSync
     [string]$PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
     [string]$PSProfileSyncFullPath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
     [string]$GistDescription = "PSProfileSync"
+    # the modules that need to be excluded out of the box
+    [string[]]$ExcludedModules = @(
+        "PowerShellGet",
+        "PackageManagement",
+        "Microsoft.PowerShell.Operation.Validation",
+        "Pester",
+        "PSReadline"
+    )
+
+    # the repository that that needs to be excluded out of the box
+    [string]$ExcludedRepositories = "PSGallery"
+    [string]$PSGalleryPath = "$env:APPDATA\PSProfileSync\PSGallery.json"
 
     PSProfileSync($UserName, $PATToken)
     {
@@ -121,7 +133,20 @@ class PSProfileSync
         }
         return $returnObject
     }
+    #endregion
 
+    #region SaveSettings
+    #region PSRepository
+    [Object[]] GetPSRepository()
+    {
+        $Repositories = Get-PSRepository
+        $Repositories | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
+
+    }
+    #endregion
+    #endregion
+
+    #region HelperMethods
     [bool] TestForGitAuthFile([string]$PathAuthFile)
     {
         if (Test-Path -Path $PathAuthFile)
