@@ -139,10 +139,15 @@ class PSProfileSync
     #region PSRepository
     [Object[]] GetPSRepository()
     {
-        $Repositories = Get-PSRepository
-        $Repositories | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
-
+        return Get-PSRepository
     }
+
+    [void]SavePSRepositoriesToFile()
+    {
+        $AllRepos = $this.GetPSRepository()
+        $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
+    }
+
     #endregion
     #endregion
 
@@ -157,6 +162,16 @@ class PSProfileSync
         {
             return $false
         }
+    }
+
+    [void]ConverttoZipArchive([string]$SourePath, [String]$TargetPath)
+    {
+        Compress-Archive -Path $SourePath -DestinationPath $TargetPath -CompressionLevel Optimal
+    }
+
+    [void] ExecuteCertUtil([string]$SourePath, [string]$TargetPath)
+    {
+        Start-Process -FilePath "$env:windir\System32\certutil.exe" -ArgumentList "-encode", $SourePath, $TargetPath
     }
     #endregion
 }
