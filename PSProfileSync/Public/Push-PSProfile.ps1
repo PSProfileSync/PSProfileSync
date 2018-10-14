@@ -12,25 +12,14 @@ function Push-PSProfile
         [string]
         $PATToken
     )
-
     $obj = [PSProfileSync]::new($Username, $PATToken)
 
-    <# $PathAuthFile = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
-
-    if (Test-PSForGitAuthFile -PathAuthFile $PathAuthFile)
+    if ($obj.IsGitInstalled())
     {
-
+        $Authfile = $obj.ImportGitAuthFile($obj.PSProfileSyncFullPath)
+        $AllRepositories = $obj.SavePSRepositoriesToFile()
+        $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSRepotitoryPath)
+        $GistId = $Authfile.GistId
+        $obj.EditGitHubGist($GistId, $obj.EncodedPSRepotitoryPath)
     }
-    else
-    {
-
-    } #>
-
-    <# Write-Verbose -Message "Create GitHub Gist and return the Gist Id."
-
-    $GistId = New-PSGitHubGist -UserName $UserName -PATToken $PATToken
-
-    $FileObject = New-PSAuthFileObject -UserName $UserName -PATToken $PATToken -GistId $GistId
-
-    New-PSGitAuthFile -AuthFileObject $FileObject #>
 }
