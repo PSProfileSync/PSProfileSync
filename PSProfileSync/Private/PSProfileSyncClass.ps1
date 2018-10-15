@@ -14,7 +14,7 @@ class PSProfileSync
     [string]$PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
     [string]$LocalGistPath = "$env:APPDATA\PSProfileSync\Gist"
     [string]$PSProfileSyncFullPath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
-    [string]$GistDescription = "PSProfileSync"
+    [string]$GistDescription = "..PSPROFILESYNC"
     # the modules that need to be excluded out of the box
     [string[]]$ExcludedModules = @(
         "PowerShellGet",
@@ -126,9 +126,8 @@ class PSProfileSync
         $FileName = Split-Path -Path $FilePath -Leaf
 
         [HashTable]$Body = @{
-            description = "PSProfileSync"
-            files       = @{
-                "$FileName" = @{
+            files = @{
+                "$FileName"           = @{
                     content  = (Get-Content -Path $FilePath)
                     filename = "$FileName"
                 }
