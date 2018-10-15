@@ -51,7 +51,7 @@ class PSProfileSync
     {
         $Token = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
         $cred = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $Token)
-        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Body $ApiBody -Authentication Basic -Credential $cred
+        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
         return $result
     }
 
@@ -98,7 +98,7 @@ class PSProfileSync
         return $GistId
     }
 
-    [void] EditGitHubGist([string]$GistId, [string]$FilePath)
+    <# [void] EditGitHubGist([string]$GistId, [string]$FilePath)
     {
         $Uri = ("https://api.github.com/gists/{0}" -f $GistId)
         $GistObject = $this.CallGitHubApiGET($Uri, "GET")
@@ -118,26 +118,28 @@ class PSProfileSync
         git add .\$FileName
         git commit -m "$FilePath added."
         git push
-    }
+    } #>
 
-    <# [void] EditGitHubGist([string]$GistId, [string]$FilePath)
+    [void] EditGitHubGist([string]$GistId, [string]$FilePath)
     {
-        $Uri = ("https://api.github.com/gists/{0}" -f $GistId)
+        $Uri = "https://api.github.com/gists/$GistId"
+        $FileName = Split-Path -Path $FilePath -Leaf
 
-        $GistObject = $this.CallGitHubApiGET($Uri, "GET")
-
-        $FileObject = [PSCustomObject]@{
-            filename = $FilePath
-            content = ((Get-Content -Path $FilePath -Raw).PSObject.BaseObject)
+        [HashTable]$Body = @{
+            description = "PSProfileSync"
+            files       = @{
+                "$FileName" = @{
+                    content  = (Get-Content -Path $FilePath)
+                    filename = "$FileName"
+                }
+            }
         }
 
-        $GistObject.files | Add-Member -MemberType NoteProperty -Name $FilePath -Value $FileObject
-
-        $BodyJSON = ConvertTo-Json -InputObject $GistObject -Compress
-        $Method = "PATCH"
-
-        ($this.CallGitHubApiPOST($Uri, $Method, $BodyJSON))
-    } #>
+        $ApiBody = ConvertTo-Json -InputObject $Body -Compress
+        $Token = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
+        $cred = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $Token)
+        Invoke-RestMethod -Uri $Uri -Method "PATCH" -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+    }
     #endregion
 
     #region Settings File methods

@@ -14,12 +14,10 @@ function Push-PSProfile
     )
     $obj = [PSProfileSync]::new($Username, $PATToken)
 
-    if ($obj.IsGitInstalled())
-    {
-        $Authfile = $obj.ImportGitAuthFile($obj.PSProfileSyncFullPath)
-        $AllRepositories = $obj.SavePSRepositoriesToFile()
-        $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSRepotitoryPath)
-        $GistId = $Authfile.GistId
-        $obj.EditGitHubGist($GistId, $obj.EncodedPSRepotitoryPath)
-    }
+    $Authfile = $obj.ImportGitAuthFile($obj.PSProfileSyncFullPath)
+    $AllRepositories = $obj.SavePSRepositoriesToFile()
+    $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSRepotitoryPath)
+    $GistId = $Authfile.GistId
+    $obj.EditGitHubGist($GistId, $obj.EncodedPSRepotitoryPath)
+
 }
