@@ -229,7 +229,7 @@ class PSProfileSync
         Start-Process -FilePath "$env:windir\System32\certutil.exe" -ArgumentList "-decode", $SourePath, $TargetPath -Wait
     }
 
-    [bool]IsGitInstalled()
+    <# [bool]IsGitInstalled()
     {
         try
         {
@@ -241,6 +241,6 @@ class PSProfileSync
             Write-Error -Message "Git is not installed. Message is $_"
             return $false
         }
-    }
+    } #>
     #endregion
 }
