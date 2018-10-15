@@ -36,8 +36,9 @@ InModuleScope PSProfileSync {
                 $Method = "POST"
                 $Uri = "http://test.io"
                 $body = @{Test = "Test"}
+                $ApiBody = ConvertTo-Json -InputObject $body -Compress
                 Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-                $result = $PSProfileSyncClass.CallGitHubApiPOST($Uri, $Method, $body)
+                $result = $PSProfileSyncClass.CallGitHubApiPOST($Uri, $Method, $ApiBody)
                 $result | Should -Be "Success"
                 Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
             }
