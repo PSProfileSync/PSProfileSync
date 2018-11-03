@@ -15,9 +15,23 @@ function Push-PSProfile
     $obj = [PSProfileSync]::new($Username, $PATToken)
 
     $Authfile = $obj.ImportGitAuthFile($obj.PSProfileSyncFullPath)
-    $AllRepositories = $obj.SavePSRepositoriesToFile()
-    $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSRepotitoryPath)
     $GistId = $Authfile.GistId
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSRepotitoryPath)
 
+    # Calculate Freespace on SystemDrive
+    $obj.SaveCalculateFreespaceOnSystemDrive()
+
+    # Repository
+    $obj.SavePSRepositoriesToFile()
+    $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSRepotitoryPath)
+
+    # Modules
+    $obj.SavePSModulesToFile()
+    $obj.ExecuteEncodeCertUtil($obj.PSModulePath, $obj.EncodedPSModulePath)
+    $obj.ExecuteEncodeCertUtil($obj.PSModuleArchiveFolderPathZip, $obj.EncodedPSModuleArchiveFolderPathZip)
+
+    # Upload to Gist
+    $obj.EditGitHubGist($GistId, $obj.PSFreeSpacePath)
+    $obj.EditGitHubGist($GistId, $obj.EncodedPSRepotitoryPath)
+    $obj.EditGitHubGist($GistId, $obj.EncodedPSModulePath)
+    $obj.EditGitHubGist($GistId, $obj.EncodedPSModuleArchiveFolderPathZip)
 }

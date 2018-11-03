@@ -23,11 +23,23 @@ class PSProfileSync
         "Pester",
         "PSReadline"
     )
+    [string[]]$IncludedPSModulePaths = @(
+        "$($this.GetDocumentsFolder())\PowerShell\Modules",
+        "$($this.GetDocumentsFolder())\WindowsPowerShell\Modules",
+        "$env:ProgramFiles\PowerShell\Modules",
+        "$env:ProgramFiles\WindowsPowerShell\Modules"
+    )
 
     # the repository that that needs to be excluded out of the box
     [string]$ExcludedRepositories = "PSGallery"
     [string]$PSGalleryPath = "$env:APPDATA\PSProfileSync\PSGallery.json"
+    [string]$PSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.json"
     [string]$EncodedPSRepotitoryPath = "$env:APPDATA\PSProfileSync\PSGallery.txt"
+    [string]$EncodedPSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.txt"
+    [string]$PSFreeSpacePath = "$env:APPDATA\PSProfileSync\Freespace.json"
+    [string]$PSModuleArchiveFolderPath = "$env:APPDATA\PSProfileSync\ModuleArchive"
+    [string]$PSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.zip"
+    [string]$EncodedPSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.txt"
 
     PSProfileSync($UserName, $PATToken)
     {
@@ -122,22 +134,29 @@ class PSProfileSync
 
     [void] EditGitHubGist([string]$GistId, [string]$FilePath)
     {
-        $Uri = "https://api.github.com/gists/$GistId"
-        $FileName = Split-Path -Path $FilePath -Leaf
+        if (Test-Path $FilePath)
+        {
+            $Uri = "https://api.github.com/gists/$GistId"
+            $FileName = Split-Path -Path $FilePath -Leaf
 
-        [HashTable]$Body = @{
-            files = @{
-                "$FileName"           = @{
-                    content  = (Get-Content -Path $FilePath)
-                    filename = "$FileName"
+            [HashTable]$Body = @{
+                files = @{
+                    "$FileName" = @{
+                        content  = (Get-Content -Path $FilePath)
+                        filename = "$FileName"
+                    }
                 }
             }
-        }
 
-        $ApiBody = ConvertTo-Json -InputObject $Body -Compress
-        $Token = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
-        $cred = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $Token)
-        Invoke-RestMethod -Uri $Uri -Method "PATCH" -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+            $ApiBody = ConvertTo-Json -InputObject $Body -Compress
+            $Token = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
+            $cred = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $Token)
+            Invoke-RestMethod -Uri $Uri -Method "PATCH" -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+        }
+        else
+        {
+            #TODO: Logfile
+        }
     }
     #endregion
 
@@ -158,7 +177,7 @@ class PSProfileSync
 
     [void] CreateGitAuthFile([pscustomobject]$AuthFileObject, [string]$Path = $this.PSProfileSyncFullPath)
     {
-        If (-not($this.TestForGitAuthFile($Path)))
+        If (-not($this.TestPath($Path)))
         {
             New-Item -ItemType Directory -Force -Path $this.PSProfileSyncPath
         }
@@ -182,13 +201,20 @@ class PSProfileSync
     #region PSRepository
     [Object[]] GetPSRepository()
     {
-        return Get-PSRepository
+        return (Get-PSRepository).where{$_.Name -ne $($this.ExcludedRepositories)}
     }
 
     [void]SavePSRepositoriesToFile()
     {
         $AllRepos = $this.GetPSRepository()
-        $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
+        if ([string]::IsNullOrEmpty($AllRepos))
+        {
+            #TODO: Logfile
+        }
+        else
+        {
+            $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
+        }
     }
 
     [string[]]GetPSRepositoryFile()
@@ -198,12 +224,82 @@ class PSProfileSync
     }
 
     #endregion
+
+    #region Modules
+    [Collections.ArrayList] GetPSModules()
+    {
+        $AllModules = New-Object -TypeName System.Collections.ArrayList
+        $AllModulesFolderSize = $this.CalculateModuleFoldersSize($this.IncludedPSModulePaths)
+        $SystemDriveFreespace = $this.CalculateFreespaceOnSystemDrive()
+        $this.CreateEmptyFolder($this.PSProfileSyncPath, "ModuleArchive")
+
+        if ($SystemDriveFreespace.Freespace -lt $AllModulesFolderSize)
+        {
+            throw "We cannot create the zip archive, because the System drive has not enough free disk space."
+        }
+        else
+        {
+            foreach ($Path in $this.IncludedPSModulePaths)
+            {
+                $ModulesInPath = Get-ChildItem -Path $Path -Exclude $this.ExcludedModules
+
+                if ($ModulesInPath -eq $null)
+                {
+                    #TODO: Logfile
+                }
+                else
+                {
+                    $AllModules.Add($ModulesInPath)
+
+                    foreach ($Module in $ModulesInPath)
+                    {
+                        $this.ConverttoZipArchive($Module, $this.PSModuleArchiveFolderPath)
+                    }
+                }
+            }
+            $this.RemoveEmptyFolder($this.PSModuleArchiveFolderPath)
+            return $AllModules
+        }
+    }
+
+    [double]CalculateModuleFoldersSize([string[]]$ModuleFolderPaths)
+    {
+        [double]$Foldersize = 0
+        foreach ($Folderpath in $ModuleFolderPaths)
+        {
+            $Foldersize += ((Get-ChildItem -path $Folderpath -recurse | measure-object -property length -sum).sum)
+        }
+        return $Foldersize
+    }
+
+    [void]SavePSModulesToFile()
+    {
+        $Modules = $this.GetPSModules()
+        if ($Modules -eq $null)
+        {
+            #TODO: Logfile
+        }
+        else
+        {
+            $Modules | ConvertTo-Json | Out-File -FilePath $this.PSModulePath
+        }
+    }
+
+    [string[]]GetPSModuleFile()
+    {
+        $content = Get-Content -Path $this.PSModulePath -Raw
+        return $content
+    }
     #endregion
 
+    #endregion
+
+
+
     #region HelperMethods
-    [bool] TestForGitAuthFile([string]$PathAuthFile)
+    [bool] TestPath([string]$Path)
     {
-        if (Test-Path -Path $PathAuthFile)
+        if (Test-Path -Path $Path)
         {
             return $true
         }
@@ -215,7 +311,20 @@ class PSProfileSync
 
     [void] ConverttoZipArchive([string]$SourePath, [String]$TargetPath)
     {
-        Compress-Archive -Path $SourePath -DestinationPath $TargetPath -CompressionLevel Optimal
+        if (-not( $this.TestPath($TargetPath) ) )
+        {
+            Compress-Archive -Path $SourePath -DestinationPath $TargetPath -CompressionLevel Optimal
+        }
+        else
+        {
+            $this.UpdateZipArchive($TargetPath, $SourePath)
+        }
+
+    }
+
+    [void]UpdateZipArchive([string]$ZipPath, [string]$SourePath)
+    {
+        Compress-Archive -Path $SourePath -Update -DestinationPath $ZipPath
     }
 
     [void] ExecuteEncodeCertUtil([string]$SourePath, [string]$TargetPath)
@@ -227,6 +336,41 @@ class PSProfileSync
     {
         Start-Process -FilePath "$env:windir\System32\certutil.exe" -ArgumentList "-decode", $SourePath, $TargetPath -Wait
     }
+
+    [string]GetDocumentsFolder()
+    {
+        return [environment]::getfolderpath("mydocuments")
+    }
+
+    [PSCustomObject]CalculateFreespaceOnSystemDrive()
+    {
+        [string]$freespace = (Get-Volume -DriveLetter $env:SystemDrive).SizeRemaining
+        $obj = [PSCustomObject]@{
+            FreeSpace = $freespace
+        }
+
+        return $obj
+    }
+
+    [void]SaveCalculateFreespaceOnSystemDrive()
+    {
+        $freespace = $this.CalculateFreespaceOnSystemDrive()
+        $freespace | ConvertTo-Json | Out-File -FilePath $this.PSFreeSpacePath
+    }
+
+    [void]CreateEmptyFolder([string]$Path, [string]$FolderName)
+    {
+        if ( -not ($this.TestPath($this.PSModuleArchiveFolderPath)) )
+        {
+            New-Item -ItemType Directory -Path $Path -Name $FolderName
+        }
+    }
+
+    [void]RemoveEmptyFolder([string]$FolderName)
+    {
+        Remove-Item -Path $FolderName -Force
+    }
+
 
     <# [bool]IsGitInstalled()
     {
@@ -242,4 +386,4 @@ class PSProfileSync
         }
     } #>
     #endregion
-}
+}   #endregion
