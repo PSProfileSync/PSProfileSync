@@ -374,7 +374,7 @@ class PSProfileSync
             $this.PSProfileArchiveDevEnvFolderPath
         )
 
-        if ($ProfilesWPS -eq $null)
+        if ($ProfilesWPS.Count -eq 0)
         {
             #TODO: Logfile
         }
@@ -383,7 +383,7 @@ class PSProfileSync
             $ProfilesWPS | ConvertTo-Json | Out-File -FilePath $this.PSProfilePathWPS
         }
 
-        if ($ProfilesPSCore -eq $null)
+        if ($ProfilesPSCore.Count -eq 0)
         {
             #TODO: Logfile
         }
@@ -392,7 +392,7 @@ class PSProfileSync
             $ProfilesPSCore | ConvertTo-Json | Out-File -FilePath $this.PSProfilePathPSCore
         }
 
-        if ($ProfilesDevEnv -eq $null)
+        if ($ProfilesDevEnv.Count -eq 0)
         {
             #TODO: Logfile
         }
