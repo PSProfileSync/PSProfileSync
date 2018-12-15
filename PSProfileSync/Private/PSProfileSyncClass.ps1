@@ -249,6 +249,18 @@ class PSProfileSync
         }
         return $returnObject
     }
+
+    [bool] TestForGitAuthFile([string]$PathAuthFile)
+    {
+        if (Test-Path -Path $PathAuthFile)
+        {
+            return $true
+        }
+        else
+        {
+            return $false
+        }
+    }
     #endregion
 
     #region SaveSettings
@@ -256,20 +268,23 @@ class PSProfileSync
     #region PSRepository
     [Object[]] GetPSRepository()
     {
-        return (Get-PSRepository).where{$_.Name -ne $($this.ExcludedRepositories)}
+        $repositories = Get-PSRepository | Where-Object {$_.Name -ne $($this.ExcludedRepositories)}
+        return $repositories
     }
 
-    [void]SavePSRepositoriesToFile()
+    [bool]SavePSRepositoriesToFile()
     {
         $AllRepos = $this.GetPSRepository()
-        if ([string]::IsNullOrEmpty($AllRepos))
+        if ($AllRepos -eq $null)
         {
+            return $false
             #TODO: Logfile
         }
         else
         {
             $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
         }
+        return $true
     }
     #endregion
 
