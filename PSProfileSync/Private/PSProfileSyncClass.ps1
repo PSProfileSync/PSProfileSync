@@ -338,9 +338,26 @@ class PSProfileSync
 
     [void]SavePSProfilesToFile()
     {
-        $ProfilesWPS = $this.GetPSProfiles("ProfileArchiveWPS", $this.IncludedPSProfilePathsWPS, $this.PSProfileWPSArchiveFolderPathZip, $this.PSProfileArchiveWPSFolderPath)
-        $ProfilesPSCore = $this.GetPSProfiles("ProfileArchivePSCore", $this.IncludedPSProfilePathsPSCore, $this.PSProfilePSCoreArchiveFolderPathZip, $this.PSProfileArchivePSCoreFolderPath)
-        $ProfilesDevEnv = $this.GetPSProfiles("ProfileArchiveDevEnv", $this.IncludedPSProfilePathsDevEnv, $this.PSProfileDevEnvArchiveFolderPathZip, $this.PSProfileArchiveDevEnvFolderPath)
+        $ProfilesWPS = $this.GetPSProfiles(
+            "ProfileArchiveWPS",
+            $this.IncludedPSProfilePathsWPS,
+            $this.PSProfileWPSArchiveFolderPathZip,
+            $this.PSProfileArchiveWPSFolderPath
+        )
+
+        $ProfilesPSCore = $this.GetPSProfiles(
+            "ProfileArchivePSCore",
+            $this.IncludedPSProfilePathsPSCore,
+            $this.PSProfilePSCoreArchiveFolderPathZip,
+            $this.PSProfileArchivePSCoreFolderPath
+        )
+
+        $ProfilesDevEnv = $this.GetPSProfiles(
+            "ProfileArchiveDevEnv",
+            $this.IncludedPSProfilePathsDevEnv,
+            $this.PSProfileDevEnvArchiveFolderPathZip,
+            $this.PSProfileArchiveDevEnvFolderPath
+        )
 
         if ($ProfilesWPS -eq $null)
         {
