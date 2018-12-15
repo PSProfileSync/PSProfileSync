@@ -56,7 +56,7 @@ InModuleScope PSProfileSync {
 
             It "GitHub gist exists already and returns a valid gist id" {
                 Mock -CommandName Invoke-RestMethod -MockWith {return @{
-                        description = "PSProfileSync"
+                        description = "..PSProfileSync"
                         id          = "00000"
                     }
                 }
@@ -72,7 +72,7 @@ InModuleScope PSProfileSync {
         Context "SearchGitHubGist" {
             It "Git Gist exists" {
                 $GistExist = [System.Object]@{
-                    Description = "PSProfileSync"
+                    Description = "..PSProfileSync"
                 }
                 $return = $PSProfileSyncClass.SearchGitHubGist($GistExist)
                 $return | Should -BeOfType System.Object
@@ -183,7 +183,10 @@ InModuleScope PSProfileSync {
             It "Method returns no errors" {
                 $returnvalue = $PSProfileSyncClass.SavePSRepositoriesToFile()
                 { $returnvalue } | Should -Not -Throw
-                Assert-MockCalled -CommandName ConvertTo-Json -Exactly 1
+                if ($returnvalue)
+                {
+                    Assert-MockCalled -CommandName ConvertTo-Json -Exactly 1
+                }
             }
         }
 
