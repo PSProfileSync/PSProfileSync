@@ -272,19 +272,19 @@ class PSProfileSync
         return $repositories
     }
 
-    [bool]SavePSRepositoriesToFile()
+    [object]SavePSRepositoriesToFile()
     {
         $AllRepos = $this.GetPSRepository()
         if ($AllRepos -eq $null)
         {
-            return $false
+            return $null
             #TODO: Logfile
         }
         else
         {
             $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
         }
-        return $true
+        return $null
     }
     #endregion
 
