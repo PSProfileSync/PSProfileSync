@@ -1,5 +1,6 @@
 using namespace System
 
+# Set of predefined constants for the GitHub API
 enum MethodEnum
 {
     GET
@@ -9,13 +10,15 @@ enum MethodEnum
 
 class PSProfileSync
 {
+    # Global variables
     [string]$UserName
     [string]$PATToken
     [string]$PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
     [string]$LocalGistPath = "$env:APPDATA\PSProfileSync\Gist"
     [string]$PSProfileSyncFullPath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
     [string]$GistDescription = "..PSPROFILESYNC"
-    # the modules that need to be excluded out of the box
+
+    # Modules that need to be excluded out of the box
     [string[]]$ExcludedModules = @(
         "PowerShellGet",
         "PackageManagement",
@@ -23,23 +26,74 @@ class PSProfileSync
         "Pester",
         "PSReadline"
     )
+    # Windows PowerShell and PowerShell Core module paths
     [string[]]$IncludedPSModulePaths = @(
         "$($this.GetDocumentsFolder())\PowerShell\Modules",
         "$($this.GetDocumentsFolder())\WindowsPowerShell\Modules",
         "$env:ProgramFiles\PowerShell\Modules",
         "$env:ProgramFiles\WindowsPowerShell\Modules"
     )
+    # Windows PowerShell profile paths
+    [string[]]$IncludedPSProfilePathsWPS = @(
+        "$($this.GetDocumentsFolder())\WindowsPowerShell\profile.ps1",
+        "$($this.GetDocumentsFolder())\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
+        "$env:windir\System32\WindowsPowerShell\v1.0\Microsoft.PowerShell_profile.ps1"
+        "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
+    )
+    # PowerShell Core profile paths
+    [string[]]$IncludedPSProfilePathsPSCore = @(
+        "$($this.GetDocumentsFolder())\PowerShell\Microsoft.PowerShell_profile.ps1"
+        "$($this.GetDocumentsFolder())\PowerShell\profile.ps1",
+        "$env:ProgramFiles\PowerShell\6\Microsoft.PowerShell_profile.ps1"
+        "$env:ProgramFiles\PowerShell\6\profile.ps1"
+    )
+    # Windows PowerShell and PowerShell Core dev profile paths
+    [string[]]$IncludedPSProfilePathsDevEnv = @(
+        "$($this.GetDocumentsFolder())\PowerShell\Microsoft.VSCode_profile.ps1"
+        "$($this.GetDocumentsFolder())\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1"
+    )
 
-    # the repository that that needs to be excluded out of the box
+    # Repositories that needs to be excluded out of the box
     [string]$ExcludedRepositories = "PSGallery"
+
+    # Repositories
     [string]$PSGalleryPath = "$env:APPDATA\PSProfileSync\PSGallery.json"
-    [string]$PSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.json"
-    [string]$EncodedPSRepotitoryPath = "$env:APPDATA\PSProfileSync\PSGallery.txt"
+
+    # Profile paths
+    [string]$PSProfilePathWPS = "$env:APPDATA\PSProfileSync\ProfilesListAvailableWPS.json"
+    [string]$PSProfilePathPSCore = "$env:APPDATA\PSProfileSync\ProfilesListAvailablePSCore.json"
+    [string]$PSProfilePathDevEnv = "$env:APPDATA\PSProfileSync\ProfilesListAvailableDevEnv.json"
+
+    # Encoded repositories
+    [string]$EncodedPSGalleryPath = "$env:APPDATA\PSProfileSync\PSGallery.txt"
+
+    # Encoded profiles
+    [string]$EncodedPSProfilePathWPS = "$env:APPDATA\PSProfileSync\ProfilesListAvailableWPS.txt"
+    [string]$EncodedPSProfilePathPSCore = "$env:APPDATA\PSProfileSync\ProfilesListAvailablePSCore.txt"
+    [string]$EncodedPSProfilePathDevEnv = "$env:APPDATA\PSProfileSync\ProfilesListAvailableDevEnv.txt"
+
+    # Encoded modules
     [string]$EncodedPSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.txt"
-    [string]$PSFreeSpacePath = "$env:APPDATA\PSProfileSync\Freespace.json"
-    [string]$PSModuleArchiveFolderPath = "$env:APPDATA\PSProfileSync\ModuleArchive"
-    [string]$PSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.zip"
     [string]$EncodedPSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.txt"
+
+
+    [string]$EncodedPSProfileWPSArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveWPS.txt"
+    [string]$EncodedPSProfilePSCoreArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchivePSCore.txt"
+    [string]$EncodedPSProfileDevEnvArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveDevEnv.txt"
+
+    [string]$PSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.json"
+    [string]$PSModuleArchiveFolderPath = "$env:APPDATA\PSProfileSync\ModuleArchive"
+    [string]$PSProfileArchiveWPSFolderPath = "$env:APPDATA\PSProfileSync\ProfileArchiveWPS"
+    [string]$PSProfileArchivePSCoreFolderPath = "$env:APPDATA\PSProfileSync\ProfileArchivePSCore"
+    [string]$PSProfileArchiveDevEnvFolderPath = "$env:APPDATA\PSProfileSync\ProfileArchiveDevEnv"
+
+    [string]$PSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.zip"
+    [string]$PSProfileWPSArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveWPS.zip"
+    [string]$PSProfilePSCoreArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchivePSCore.zip"
+    [string]$PSProfileDevEnvArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveDevEnv.zip"
+
+    # Required disk space
+    [string]$PSFreeSpacePath = "$env:APPDATA\PSProfileSync\Freespace.json"
 
     PSProfileSync($UserName, $PATToken)
     {
@@ -198,6 +252,7 @@ class PSProfileSync
     #endregion
 
     #region SaveSettings
+
     #region PSRepository
     [Object[]] GetPSRepository()
     {
@@ -216,13 +271,6 @@ class PSProfileSync
             $AllRepos | ConvertTo-Json | Out-File -FilePath $this.PSGalleryPath
         }
     }
-
-    [string[]]GetPSRepositoryFile()
-    {
-        $content = Get-Content -Path $this.EncodedPSRepotitoryPath -Raw
-        return $content
-    }
-
     #endregion
 
     #region Modules
@@ -233,7 +281,7 @@ class PSProfileSync
         $SystemDriveFreespace = $this.CalculateFreespaceOnSystemDrive()
         $this.CreateEmptyFolder($this.PSProfileSyncPath, "ModuleArchive")
 
-        if ($SystemDriveFreespace.Freespace -lt $AllModulesFolderSize)
+        if ($SystemDriveFreespace -lt $AllModulesFolderSize)
         {
             throw "We cannot create the zip archive, because the System drive has not enough free disk space."
         }
@@ -284,12 +332,87 @@ class PSProfileSync
             $Modules | ConvertTo-Json | Out-File -FilePath $this.PSModulePath
         }
     }
+    #endregion
 
-    [string[]]GetPSModuleFile()
+    #region Profiles
+
+    [void]SavePSProfilesToFile()
     {
-        $content = Get-Content -Path $this.PSModulePath -Raw
-        return $content
+        $ProfilesWPS = $this.GetPSProfiles("ProfileArchiveWPS", $this.IncludedPSProfilePathsWPS, $this.PSProfileWPSArchiveFolderPathZip, $this.PSProfileArchiveWPSFolderPath)
+        $ProfilesPSCore = $this.GetPSProfiles("ProfileArchivePSCore", $this.IncludedPSProfilePathsPSCore, $this.PSProfilePSCoreArchiveFolderPathZip, $this.PSProfileArchivePSCoreFolderPath)
+        $ProfilesDevEnv = $this.GetPSProfiles("ProfileArchiveDevEnv", $this.IncludedPSProfilePathsDevEnv, $this.PSProfileDevEnvArchiveFolderPathZip, $this.PSProfileArchiveDevEnvFolderPath)
+
+        if ($ProfilesWPS -eq $null)
+        {
+            #TODO: Logfile
+        }
+        else
+        {
+            $ProfilesWPS | ConvertTo-Json | Out-File -FilePath $this.PSProfilePathWPS
+        }
+
+        if ($ProfilesPSCore -eq $null)
+        {
+            #TODO: Logfile
+        }
+        else
+        {
+            $ProfilesPSCore | ConvertTo-Json | Out-File -FilePath $this.PSProfilePathPSCore
+        }
+
+        if ($ProfilesDevEnv -eq $null)
+        {
+            #TODO: Logfile
+        }
+        else
+        {
+            $ProfilesDevEnv | ConvertTo-Json | Out-File -FilePath $this.PSProfilePathDevEnv
+        }
     }
+
+    [Collections.ArrayList] GetPSProfiles([string]$ZipName, [string[]]$ProfilePaths, [string]$ZipFilePath, [string]$FolderToRemove)
+    {
+        $AllProfiles = New-Object -TypeName System.Collections.ArrayList
+        $AllProfilesFileSize = $this.CalculateProfileFileSizes($ProfilePaths)
+        $SystemDriveFreespace = $this.CalculateFreespaceOnSystemDrive()
+        $this.CreateEmptyFolder($this.PSProfileSyncPath, $ZipName)
+
+        if ($SystemDriveFreespace -lt $AllProfilesFileSize)
+        {
+            throw "We cannot create the zip archive, because the System drive has not enough free disk space."
+        }
+        else
+        {
+            foreach ($Path in $ProfilePaths)
+            {
+                $PathExist = $this.TestPath($Path)
+
+                if ($PathExist -eq $false)
+                {
+                    #TODO: Logfile
+                }
+                else
+                {
+                    $AllProfiles.Add($Path)
+
+                    $this.ConverttoZipArchive($Path, $ZipFilePath)
+                }
+            }
+            $this.RemoveEmptyFolder($FolderToRemove)
+            return $AllProfiles
+        }
+    }
+
+    [double]CalculateProfileFileSizes([string[]]$ProfileFilePaths)
+    {
+        [double]$Foldersize = 0
+        foreach ($File in $ProfileFilePaths)
+        {
+            $Foldersize += ((Get-ChildItem -path $File | measure-object -property length -sum).sum)
+        }
+        return $Foldersize
+    }
+
     #endregion
 
     #endregion
@@ -319,7 +442,6 @@ class PSProfileSync
         {
             $this.UpdateZipArchive($TargetPath, $SourePath)
         }
-
     }
 
     [void]UpdateZipArchive([string]$ZipPath, [string]$SourePath)
@@ -342,14 +464,10 @@ class PSProfileSync
         return [environment]::getfolderpath("mydocuments")
     }
 
-    [PSCustomObject]CalculateFreespaceOnSystemDrive()
+    [uint64]CalculateFreespaceOnSystemDrive()
     {
-        [string]$freespace = (Get-Volume -DriveLetter $env:SystemDrive).SizeRemaining
-        $obj = [PSCustomObject]@{
-            FreeSpace = $freespace
-        }
-
-        return $obj
+        [uint64]$freespace = (Get-Volume -DriveLetter $env:SystemDrive).SizeRemaining
+        return $freespace
     }
 
     [void]SaveCalculateFreespaceOnSystemDrive()
@@ -370,7 +488,6 @@ class PSProfileSync
     {
         Remove-Item -Path $FolderName -Force
     }
-
 
     <# [bool]IsGitInstalled()
     {
