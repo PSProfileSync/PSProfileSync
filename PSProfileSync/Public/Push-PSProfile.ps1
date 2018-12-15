@@ -38,6 +38,7 @@ function Push-PSProfile
     $obj.ExecuteEncodeCertUtil($obj.PSProfilePSCoreArchiveFolderPathZip, $obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
     $obj.ExecuteEncodeCertUtil($obj.PSProfileDevEnvArchiveFolderPathZip, $obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
 
+    #TODO: Only Upload if file is not available
     # Upload to Gist
     #$obj.EditGitHubGist($GistId, $obj.PSFreeSpacePath)
     $obj.EditGitHubGist($GistId, $obj.EncodedPSGalleryPath)
