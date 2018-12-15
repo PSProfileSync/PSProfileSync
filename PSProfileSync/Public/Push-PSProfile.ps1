@@ -33,7 +33,7 @@ function Push-PSProfile
     $obj.SavePSProfilesToFile()
     $obj.ExecuteEncodeCertUtil($obj.PSProfilePathWPS, $obj.EncodedPSProfilePathWPS)
     $obj.ExecuteEncodeCertUtil($obj.PSProfilePathPSCore, $obj.EncodedPSProfilePathPSCore)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfilePathDevEnvo, $obj.EncodedPSProfilePathDevEnv)
+    $obj.ExecuteEncodeCertUtil($obj.PSProfilePathDevEnv, $obj.EncodedPSProfilePathDevEnv)
     $obj.ExecuteEncodeCertUtil($obj.PSProfileWPSArchiveFolderPathZip, $obj.EncodedPSProfileWPSArchiveFolderPathZip)
     $obj.ExecuteEncodeCertUtil($obj.PSProfilePSCoreArchiveFolderPathZip, $obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
     $obj.ExecuteEncodeCertUtil($obj.PSProfileDevEnvArchiveFolderPathZip, $obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
