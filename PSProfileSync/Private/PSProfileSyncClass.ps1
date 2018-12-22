@@ -13,9 +13,9 @@ class PSProfileSync
     # Global variables
     [string]$UserName
     [string]$PATToken
+    [string]$GistId
     [string]$PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
-    [string]$LocalGistPath = "$env:APPDATA\PSProfileSync\Gist"
-    [string]$PSProfileSyncFullPath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
+    [string]$PSProfileGitAuthFilePath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
     [string]$GistDescription = "..PSPROFILESYNC"
 
     # Modules that need to be excluded out of the box
@@ -76,7 +76,6 @@ class PSProfileSync
     [string]$EncodedPSModulePath = "$env:APPDATA\PSProfileSync\ModulesListAvailable.txt"
     [string]$EncodedPSModuleArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ModuleArchive.txt"
 
-
     [string]$EncodedPSProfileWPSArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveWPS.txt"
     [string]$EncodedPSProfilePSCoreArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchivePSCore.txt"
     [string]$EncodedPSProfileDevEnvArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveDevEnv.txt"
@@ -93,13 +92,7 @@ class PSProfileSync
     [string]$PSProfileDevEnvArchiveFolderPathZip = "$env:APPDATA\PSProfileSync\ProfileArchiveDevEnv.zip"
 
     # Required disk space
-    [string]$PSFreeSpacePath = "$env:APPDATA\PSProfileSync\Freespace.json"
-
-    PSProfileSync($UserName, $PATToken)
-    {
-        $this.UserName = $UserName
-        $this.PATToken = $PATToken
-    }
+    [string]$PSPProfileSyncFolderSizePath = "$env:APPDATA\PSProfileSync\PSProfileSyncFolderSize.json"
 
     #region GitHub Rest
     # Get Implementation for the GitHubApi
@@ -131,7 +124,7 @@ class PSProfileSync
         return $null
     }
 
-    [string] CreateGitHubGist()
+    [void] CreateGitHubGist()
     {
         # Test if gist already exist
         $Uri = ("https://api.github.com/users/{0}/gists" -f $this.UserName)
@@ -141,7 +134,7 @@ class PSProfileSync
         if ($Gist)
         {
             Write-Output -InputObject "Gist is already available. No action needed."
-            $GistId = $Gist.id
+            $this.GistId = $Gist.id
         }
         else
         {
@@ -158,39 +151,15 @@ class PSProfileSync
             }
 
             $GitHubApiResult = $this.CallGitHubApiPOST($Uri, "POST", $Body)
-            $GistId = $GitHubApiResult.id
+            $this.GistId = $GitHubApiResult.id
         }
-
-        return $GistId
     }
 
-    <# [void] EditGitHubGist([string]$GistId, [string]$FilePath)
-    {
-        $Uri = ("https://api.github.com/gists/{0}" -f $GistId)
-        $GistObject = $this.CallGitHubApiGET($Uri, "GET")
-        $FileName = Split-Path -Path $FilePath -Leaf
-        if ((Test-Path -Path $this.LocalGistPath))
-        {
-            Remove-Item $this.LocalGistPath -Recurse -Force
-            git clone $GistObject.git_pull_url $this.LocalGistPath
-        }
-        else
-        {
-            git clone $GistObject.git_pull_url $this.LocalGistPath
-        }
-
-        Copy-Item -Path $FilePath -Destination $this.LocalGistPath
-        Set-Location -Path $this.LocalGistPath
-        git add .\$FileName
-        git commit -m "$FilePath added."
-        git push
-    } #>
-
-    [void] EditGitHubGist([string]$GistId, [string]$FilePath)
+    [void] EditGitHubGist([string]$FilePath)
     {
         if (Test-Path $FilePath)
         {
-            $Uri = "https://api.github.com/gists/$GistId"
+            $Uri = ("https://api.github.com/gists/{0}" -f $this.GistId)
             $FileName = Split-Path -Path $FilePath -Leaf
 
             [HashTable]$Body = @{
@@ -212,14 +181,20 @@ class PSProfileSync
             #TODO: Logfile
         }
     }
+
+    [void]AuthenticationPrereqs()
+    {
+        # Import Git Authfile
+        $this.ImportGitAuthFile()
+    }
     #endregion
 
     #region Settings File methods
-    [pscustomobject] NewAuthFileObject([string]$GistId)
+    [pscustomobject] NewAuthFileObject([string]$GistId, [string]$PATToken, [string]$UserName)
     {
         # Build the credential object
-        $PATTokenSecure = ConvertTo-SecureString -String $this.PATToken -AsPlainText -Force
-        $GitHubCredential = New-Object -TypeName System.Management.Automation.PSCredential($this.UserName, $PATTokenSecure)
+        $PATTokenSecure = ConvertTo-SecureString -String $PATToken -AsPlainText -Force
+        $GitHubCredential = New-Object -TypeName System.Management.Automation.PSCredential($UserName, $PATTokenSecure)
 
         # Create the object for the file
         $FileObject = [PSCustomObject]@{
@@ -229,25 +204,23 @@ class PSProfileSync
         return $FileObject
     }
 
-    [void] CreateGitAuthFile([pscustomobject]$AuthFileObject, [string]$Path = $this.PSProfileSyncFullPath)
+    [void] CreateGitAuthFile([string]$GistId, [string]$PATToken, [string]$UserName)
     {
-        If (-not($this.TestPath($Path)))
+        If (-not($this.TestPath($this.PSProfileGitAuthFilePath)))
         {
             New-Item -ItemType Directory -Force -Path $this.PSProfileSyncPath
         }
-
-        $AuthFileObject | Export-Clixml -Path $this.PSProfileSyncFullPath -Force
+        $AuthFileObject = $this.NewAuthFileObject($GistId, $PATToken, $UserName)
+        $AuthFileObject | Export-Clixml -Path $this.PSProfileGitAuthFilePath -Force
     }
 
-    [PSCustomObject] ImportGitAuthFile([string]$XmlPath = $this.PSProfileSyncFullPath)
+    [void] ImportGitAuthFile()
     {
-        $XmlFile = Import-Clixml -Path $XmlPath
-        $returnObject = [PSCustomObject]@{
-            UserName = $XmlFile.GitHubCredential.UserName
-            PATToken = $XmlFile.GitHubCredential.GetNetworkCredential().Password
-            GistId   = $XmlFile.GistId
-        }
-        return $returnObject
+        $XmlFile = Import-Clixml -Path $this.PSProfileGitAuthFilePath
+
+        $this.UserName = $XmlFile.GitHubCredential.UserName
+        $this.PATToken = $XmlFile.GitHubCredential.GetNetworkCredential().Password
+        $this.GistId = $XmlFile.GistId
     }
 
     [bool] TestForGitAuthFile([string]$PathAuthFile)
@@ -405,7 +378,7 @@ class PSProfileSync
     [Collections.ArrayList] GetPSProfiles([string]$ZipName, [string[]]$ProfilePaths, [string]$ZipFilePath, [string]$FolderToRemove)
     {
         $AllProfiles = New-Object -TypeName System.Collections.ArrayList
-        $AllProfilesFileSize = $this.CalculateProfileFileSizes($ProfilePaths)
+        $AllProfilesFileSize = $this.CalculateFolderFileSizes($ProfilePaths)
         $SystemDriveFreespace = $this.CalculateFreespaceOnSystemDrive()
         $this.CreateEmptyFolder($this.PSProfileSyncPath, $ZipName)
 
@@ -435,12 +408,12 @@ class PSProfileSync
         }
     }
 
-    [double]CalculateProfileFileSizes([string[]]$ProfileFilePaths)
+    [uint64]CalculateFolderFileSizes([string[]]$FolderPaths)
     {
-        [double]$Foldersize = 0
-        foreach ($File in $ProfileFilePaths)
+        [uint64]$Foldersize = 0
+        foreach ($Folder in $FolderPaths)
         {
-            $Foldersize += ((Get-ChildItem -path $File | measure-object -property length -sum).sum)
+            $Foldersize += ((Get-ChildItem -path $Folder -Recurse | measure-object -property length -sum).sum)
         }
         return $Foldersize
     }
@@ -496,16 +469,31 @@ class PSProfileSync
         return [environment]::getfolderpath("mydocuments")
     }
 
+    [pscustomobject]CalculatePSProfileSyncUploadSize()
+    {
+        [uint64]$total = 0
+        $PSModulePathSize = $this.CalculateFolderFileSizes($this.IncludedPSModulePaths)
+        $PSModuleDevEnvPathSize = $this.CalculateFolderFileSizes($this.IncludedPSProfilePathsDevEnv)
+        $PSModulePSCorePathSize = $this.CalculateFolderFileSizes($this.IncludedPSProfilePathsPSCore)
+        $PSModuleWPSPathSize = $this.CalculateFolderFileSizes($this.IncludedPSProfilePathsWPS)
+
+        $total = $PSModulePathSize + $PSModuleDevEnvPathSize + $PSModulePSCorePathSize + $PSModuleWPSPathSize
+        $returnvalue = [PSCustomObject]@{
+            PSProfileSyncUploadSize = $total
+        }
+        return $returnvalue
+    }
+
     [uint64]CalculateFreespaceOnSystemDrive()
     {
         [uint64]$freespace = (Get-Volume -DriveLetter $env:SystemDrive).SizeRemaining
         return $freespace
     }
 
-    [void]SaveCalculateFreespaceOnSystemDrive()
+    [void]SavePSProfileSyncUploadSize()
     {
-        $freespace = $this.CalculateFreespaceOnSystemDrive()
-        $freespace | ConvertTo-Json | Out-File -FilePath $this.PSFreeSpacePath
+        $freespace = $this.CalculatePSProfileSyncUploadSize()
+        $freespace | ConvertTo-Json | Out-File -FilePath $this.PSPProfileSyncFolderSizePath
     }
 
     [void]CreateEmptyFolder([string]$Path, [string]$FolderName)

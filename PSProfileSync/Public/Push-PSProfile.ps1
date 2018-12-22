@@ -1,24 +1,10 @@
 function Push-PSProfile
 {
-    [CmdletBinding()]
-    param (
-        # Parameter help description
-        [Parameter(Mandatory)]
-        [string]
-        $Username,
-
-        # Parameter help description
-        [Parameter(Mandatory)]
-        [string]
-        $PATToken
-    )
-    $obj = [PSProfileSync]::new($Username, $PATToken)
-
-    $Authfile = $obj.ImportGitAuthFile($obj.PSProfileSyncFullPath)
-    $GistId = $Authfile.GistId
+    $obj = [PSProfileSync]::new()
+    $obj.AuthenticationPrereqs()
 
     # Calculate Freespace on SystemDrive
-    $obj.SaveCalculateFreespaceOnSystemDrive()
+    $obj.SavePSProfileSyncUploadSize()
 
     # Repository
     $obj.SavePSRepositoriesToFile()
@@ -38,18 +24,16 @@ function Push-PSProfile
     $obj.ExecuteEncodeCertUtil($obj.PSProfilePSCoreArchiveFolderPathZip, $obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
     $obj.ExecuteEncodeCertUtil($obj.PSProfileDevEnvArchiveFolderPathZip, $obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
 
-    #TODO: Only Upload if file is not available
     # Upload to Gist
-    #$obj.EditGitHubGist($GistId, $obj.PSFreeSpacePath)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSGalleryPath)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSModulePath)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSModuleArchiveFolderPathZip)
+    $obj.EditGitHubGist($obj.PSPProfileSyncFolderSizePath)
+    $obj.EditGitHubGist($obj.EncodedPSGalleryPath)
+    $obj.EditGitHubGist($obj.EncodedPSModulePath)
+    $obj.EditGitHubGist($obj.EncodedPSModuleArchiveFolderPathZip)
 
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfilePathWPS)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfilePathPSCore)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfilePathDevEnv)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfileWPSArchiveFolderPathZip)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
-    $obj.EditGitHubGist($GistId, $obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
-
+    $obj.EditGitHubGist($obj.EncodedPSProfilePathWPS)
+    $obj.EditGitHubGist($obj.EncodedPSProfilePathPSCore)
+    $obj.EditGitHubGist($obj.EncodedPSProfilePathDevEnv)
+    $obj.EditGitHubGist($obj.EncodedPSProfileWPSArchiveFolderPathZip)
+    $obj.EditGitHubGist($obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
+    $obj.EditGitHubGist($obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
 }
