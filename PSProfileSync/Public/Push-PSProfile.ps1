@@ -1,39 +1,44 @@
 function Push-PSProfile
 {
-    $obj = [PSProfileSync]::new()
-    $obj.AuthenticationPrereqs()
+    $objProfileClass = [PSProfileSyncProfilesClass]::new()
+    $objModulesClass = [PSProfileSyncModulesClass]::new()
+    $objHelperClass = [PSProfileSyncHelperClass]::new()
+    $objRepositoryClass = [PSProfileSyncRepositoriesClass]::new()
+    $objGitHubClass = [PSProfileSyncGitHubClass]::new()
+    $objGitHubClass.AuthenticationPrereqs()
 
     # Calculate Freespace on SystemDrive
-    $obj.SavePSProfileSyncUploadSize()
+    $objModulesClass.SavePSProfileSyncUploadSize()
+    $objProfileClass.SavePSProfileSyncUploadSize()
 
-    # Repository
-    $obj.SavePSRepositoriesToFile()
-    $obj.ExecuteEncodeCertUtil($obj.PSGalleryPath, $obj.EncodedPSGalleryPath)
+    # Repositories
+    $objRepositoryClass.SavePSRepositoriesToFile()
+    $objHelperClass.ExecuteEncodeCertUtil($objRepositoryClass.PSGalleryPath, $objRepositoryClass.EncodedPSGalleryPath)
 
     # Modules
-    $obj.SavePSModulesToFile()
-    $obj.ExecuteEncodeCertUtil($obj.PSModulePath, $obj.EncodedPSModulePath)
-    $obj.ExecuteEncodeCertUtil($obj.PSModuleArchiveFolderPathZip, $obj.EncodedPSModuleArchiveFolderPathZip)
+    $objModulesClass.SavePSModulesToFile()
+    $objHelperClass.ExecuteEncodeCertUtil($objModulesClass.PSModulePath, $objModulesClass.EncodedPSModulePath)
+    $objHelperClass.ExecuteEncodeCertUtil($objModulesClass.PSModuleArchiveFolderPathZip, $objModulesClass.EncodedPSModuleArchiveFolderPathZip)
 
     # Profiles
-    $obj.SavePSProfilesToFile()
-    $obj.ExecuteEncodeCertUtil($obj.PSProfilePathWPS, $obj.EncodedPSProfilePathWPS)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfilePathPSCore, $obj.EncodedPSProfilePathPSCore)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfilePathDevEnv, $obj.EncodedPSProfilePathDevEnv)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfileWPSArchiveFolderPathZip, $obj.EncodedPSProfileWPSArchiveFolderPathZip)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfilePSCoreArchiveFolderPathZip, $obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
-    $obj.ExecuteEncodeCertUtil($obj.PSProfileDevEnvArchiveFolderPathZip, $obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
+    $objProfileClass.SavePSProfilesToFile()
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathWPS, $objProfileClass.EncodedPSProfilePathWPS)
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathPSCore, $objProfileClass.EncodedPSProfilePathPSCore)
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathDevEnv, $objProfileClass.EncodedPSProfilePathDevEnv)
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfileWPSArchiveFolderPathZip, $objProfileClass.EncodedPSProfileWPSArchiveFolderPathZip)
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePSCoreArchiveFolderPathZip, $objProfileClass.EncodedPSProfilePSCoreArchiveFolderPathZip)
+    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfileDevEnvArchiveFolderPathZip, $objProfileClass.EncodedPSProfileDevEnvArchiveFolderPathZip)
 
     # Upload to Gist
-    $obj.EditGitHubGist($obj.PSPProfileSyncFolderSizePath)
-    $obj.EditGitHubGist($obj.EncodedPSGalleryPath)
-    $obj.EditGitHubGist($obj.EncodedPSModulePath)
-    $obj.EditGitHubGist($obj.EncodedPSModuleArchiveFolderPathZip)
-
-    $obj.EditGitHubGist($obj.EncodedPSProfilePathWPS)
-    $obj.EditGitHubGist($obj.EncodedPSProfilePathPSCore)
-    $obj.EditGitHubGist($obj.EncodedPSProfilePathDevEnv)
-    $obj.EditGitHubGist($obj.EncodedPSProfileWPSArchiveFolderPathZip)
-    $obj.EditGitHubGist($obj.EncodedPSProfilePSCoreArchiveFolderPathZip)
-    $obj.EditGitHubGist($obj.EncodedPSProfileDevEnvArchiveFolderPathZip)
+    $objGitHubClass.EditGitHubGist($objProfileClass.PSPProfileSyncProfileFolderSizePath)
+    $objGitHubClass.EditGitHubGist($objModulesClass.PSPProfileSyncModulesFolderSizePath)
+    $objGitHubClass.EditGitHubGist($objRepositoryClass.EncodedPSGalleryPath)
+    $objGitHubClass.EditGitHubGist($objModulesClass.EncodedPSModulePath)
+    $objGitHubClass.EditGitHubGist($objModulesClass.EncodedPSModuleArchiveFolderPathZip)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathWPS)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathPSCore)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathDevEnv)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfileWPSArchiveFolderPathZip)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePSCoreArchiveFolderPathZip)
+    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfileDevEnvArchiveFolderPathZip)
 }
