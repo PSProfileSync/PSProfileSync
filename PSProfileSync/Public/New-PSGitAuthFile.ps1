@@ -17,7 +17,7 @@ function New-PSGitAuthFile
         $PATToken
     )
 
-    $obj = [PSProfileSync]::new()
+    $obj = [PSProfileSyncGitHubClass]::new()
 
     if (-not ($obj.TestForGitAuthFile($obj.PSProfileGitAuthFilePath)))
     {
