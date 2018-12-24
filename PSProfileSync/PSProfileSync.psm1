@@ -1,9 +1,15 @@
-. $PSScriptRoot\Private\PSProfileSyncHelperClass.ps1
-. $PSScriptRoot\Private\PSProfileSyncModulesClass.ps1
-. $PSScriptRoot\Private\PSProfileSyncProfilesClass.ps1
-. $PSScriptRoot\Private\PSProfileSyncRepositoriesClass.ps1
-. $PSScriptRoot\Private\PSProfileSyncGitHubClass.ps1
-
-. $PSScriptRoot\Public\Import-PSProfile.ps1
-. $PSScriptRoot\Public\New-PSGitAuthFile.ps1
-. $PSScriptRoot\Public\Push-PSProfile.ps1
+$functionFolders = @('Private\Enums', 'Private\Classes', 'Public' )
+ForEach ($folder in $functionFolders)
+{
+    $folderPath = Join-Path -Path $PSScriptRoot -ChildPath $folder
+    If (Test-Path -Path $folderPath)
+    {
+        Write-Verbose -Message "Importing from $folder"
+        $FunctionFiles = Get-ChildItem -Path $folderPath -Filter '*.ps1' -Recurse
+        ForEach ($FunctionFile in $FunctionFiles)
+        {
+            Write-Verbose -Message "  Importing $($FunctionFile.BaseName)"
+            . $($FunctionFile.FullName)
+        }
+    }
+}

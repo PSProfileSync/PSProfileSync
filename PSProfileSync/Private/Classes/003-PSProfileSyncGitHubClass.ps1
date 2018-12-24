@@ -1,11 +1,3 @@
-# Set of predefined constants for the GitHub API
-enum MethodEnum
-{
-    GET
-    POST
-    PATCH
-}
-
 Class PSProfileSyncGitHubClass
 {
     # Global variables
@@ -15,7 +7,6 @@ Class PSProfileSyncGitHubClass
     [string]$GistId
     [string]$GistDescription = "..PSPROFILESYNC"
     [string]$PSProfileGitAuthFilePath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
-
 
     [Object[]] CallGitHubApiGET([string]$Uri, [MethodEnum]$Method)
     {

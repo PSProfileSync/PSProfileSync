@@ -57,7 +57,14 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    # ScriptsToProcess = @()
+    ScriptsToProcess  = @(
+        'Private\Enums\GitHubMethodEnum.ps1'
+        'Private\Classes\001-PSProfileSyncHelperClass.ps1'
+        'Private\Classes\002-PSProfileSyncModulesClass.ps1'
+        'Private\Classes\003-PSProfileSyncGitHubClass.ps1'
+        'Private\Classes\004-PSProfileSyncRepositoriesClass.ps1'
+        'Private\Classes\005-PSProfileSyncProfilesClass.ps1'
+    )
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
