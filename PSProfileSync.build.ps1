@@ -19,8 +19,8 @@ task Clean {
     }
 
     New-Item -ItemType Directory -Path $Artifacts -Force
-    
-        
+
+
 }
 
 #Synopsis: Analyze code.
@@ -57,6 +57,10 @@ task RunTests {
 
 }
 
+task CreateCodeCoverageReport {
+    
+}
+
 #Synopsis: Confirm that tests passed.
 task ConfirmTestsPassed {
     # Fail Build after reports are created, this allows CI to publish test results before failing
@@ -72,7 +76,7 @@ task ConfirmTestsPassed {
 
 #Synopsis: Publish to SMB File Share.
 task Publish {
-    
+
     $moduleInfo = @{
         RepositoryName = $Settings.SMBRepositoryName
         RepositoryPath = $Settings.SMBRepositoryPath
@@ -97,17 +101,17 @@ task PublishNuget {
             $file.fullname,
             [ref]$tokens,
             [ref]$errors)
-    
+
         $functionDefinitions = $ast.FindAll( {
                 param([System.Management.Automation.Language.Ast] $Ast)
-        
+
                 $Ast -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
                 # Class methods have a FunctionDefinitionAst under them as well, but we don't want them.
                 ($PSVersionTable.PSVersion.Major -lt 5 -or
                     $Ast.Parent -isnot [System.Management.Automation.Language.FunctionMemberAst])
-        
+
             }, $true)
-    
+
         $exportFunctions += $functionDefinitions.Name
     }
     $Functions = $exportFunctions
@@ -116,6 +120,6 @@ task PublishNuget {
     $t = [xml] (Get-Content .\$ModuleName.nuspec)
     $t.package.metadata.version = $newVersion.ToString()
     $t.Save(".\$ModuleName.nuspec")
-    
+
     nuget pack $ModuleName.nuspec -basepath $ModulePath -NoPackageAnalysis -outputdirectory $ENV:Build_ArtifactStagingDirectory
 }

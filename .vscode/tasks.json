@@ -14,8 +14,13 @@
   "windows": {
     "options": {
       "shell": {
-        "executable": "powershell.exe",
-        "args": [ "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command" ]
+        "executable": "C:\\Program Files\\PowerShell\\6\\pwsh.exe",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command"
+        ]
       }
     }
   },
@@ -23,7 +28,10 @@
     "options": {
       "shell": {
         "executable": "/usr/bin/pwsh",
-        "args": [ "-NoProfile", "-Command" ]
+        "args": [
+          "-NoProfile",
+          "-Command"
+        ]
       }
     }
   },
@@ -31,7 +39,10 @@
     "options": {
       "shell": {
         "executable": "/usr/local/bin/pwsh",
-        "args": [ "-NoProfile", "-Command" ]
+        "args": [
+          "-NoProfile",
+          "-Command"
+        ]
       }
     }
   },
@@ -39,7 +50,9 @@
     {
       "label": "Test",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task Test",
       "group": {
         "kind": "test",
@@ -49,49 +62,74 @@
     {
       "label": ".",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
       },
       "command": "Invoke-Build -Task ."
     },
-
     {
       "label": "Clean",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task Clean"
     },
     {
       "label": "Analyze",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task Analyze"
     },
     {
       "label": "RunTests",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task RunTests"
     },
     {
       "label": "ConfirmTestsPassed",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task ConfirmTestsPassed"
     },
     {
       "label": "Publish",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task Publish"
     },
     {
       "label": "PublishNuget",
       "type": "shell",
-      "problemMatcher": [ "$msCompile" ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
       "command": "Invoke-Build -Task PublishNuget"
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "./Test-SingleFile.ps1 -FileToTest ${file}",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$pester"
+      ]
     },
     {
       "label": "?",
@@ -101,4 +139,3 @@
     }
   ]
 }
-
