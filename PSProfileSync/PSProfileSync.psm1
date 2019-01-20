@@ -1,4 +1,4 @@
-$functionFolders = @('Private\Enums', 'Private\Classes', 'Public' )
+$functionFolders = @('Private', 'Public' )
 ForEach ($folder in $functionFolders)
 {
     $folderPath = Join-Path -Path $PSScriptRoot -ChildPath $folder
