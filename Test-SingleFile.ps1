@@ -17,7 +17,7 @@ if ($FileName -like "*.tests.ps1")
 else
 {
     $fileName = $fileName -replace ".ps1$", ".tests.ps1"
-    $testFile = (Join-Path $PSScriptRoot "/Tests/Private/$fileName")
+    $testFile = (Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "/Tests/Private") -Recurse | Where-Object {$_.Name -eq $fileName}).FullName
     $functionFile = $FileToTest
 }
 

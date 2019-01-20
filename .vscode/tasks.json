@@ -120,7 +120,7 @@
       "command": "Invoke-Build -Task PublishNuget"
     },
     {
-      "label": "Test",
+      "label": "TestSingleFile",
       "type": "shell",
       "command": "./Test-SingleFile.ps1 -FileToTest ${file}",
       "group": {
