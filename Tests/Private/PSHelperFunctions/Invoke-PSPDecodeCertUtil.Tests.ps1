@@ -1,5 +1,5 @@
 $ModuleManifestName = 'PSProfileSync.psd1'
-$Root = (Get-Item $PSScriptRoot).Parent.Parent.FullName
+$Root = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
 $ModuleManifestPath = Join-Path $Root -ChildPath "PSProfileSync\$ModuleManifestName"
 
 if (Get-Module PSProfileSync)
@@ -13,14 +13,14 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "ConverttoZipArchive" {
-        It "Converts the files to a zip archive" {
+    Context "ExecuteDecodeCertUtil" {
+        It "Decodes a file back to the original" {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"
-            Mock -CommandName "Compress-Archive" -MockWith {}
-            $returnvalue = $PSProfileSyncClass.ConverttoZipArchive($Sourcepath, $Targetpath)
+            Mock -CommandName "Start-Process" -MockWith {}
+            $returnvalue = Invoke-PSPDecodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
             {$returnvalue} | Should -Not -Throw
-            Assert-MockCalled -CommandName "Compress-Archive" -Exactly 1
+            Assert-MockCalled -CommandName "Start-Process" -Exactly 1
         }
     }
 }
