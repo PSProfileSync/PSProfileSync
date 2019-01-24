@@ -1,4 +1,4 @@
-function Invoke-PSPDecodeCertUtil
+function Invoke-PSDecodeCertUtil
 {
     <#
         .SYNOPSIS

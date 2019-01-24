@@ -13,14 +13,14 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "ConvertTo-PSPZipArchive" {
-        It "Converts the files to a zip archive" {
+    Context "ExecuteEncodeCertUtil" {
+        It "Encodes a file to a certificate" {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"
-            Mock -CommandName "Compress-Archive" -MockWith {}
-            $returnvalue = ConvertTo-PSPZipArchive -SourcePath $Sourcepath -TargetPath $Targetpath
+            Mock -CommandName "Start-Process" -MockWith {}
+            $returnvalue = Invoke-PSEncodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
             {$returnvalue} | Should -Not -Throw
-            Assert-MockCalled -CommandName "Compress-Archive" -Exactly 1
+            Assert-MockCalled -CommandName "Start-Process" -Exactly 1
         }
     }
 }

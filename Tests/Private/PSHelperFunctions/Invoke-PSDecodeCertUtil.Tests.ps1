@@ -13,12 +13,12 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "ExecuteEncodeCertUtil" {
-        It "Encodes a file to a certificate" {
+    Context "ExecuteDecodeCertUtil" {
+        It "Decodes a file back to the original" {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"
             Mock -CommandName "Start-Process" -MockWith {}
-            $returnvalue = Invoke-PSPEncodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
+            $returnvalue = Invoke-PSDecodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
             {$returnvalue} | Should -Not -Throw
             Assert-MockCalled -CommandName "Start-Process" -Exactly 1
         }
