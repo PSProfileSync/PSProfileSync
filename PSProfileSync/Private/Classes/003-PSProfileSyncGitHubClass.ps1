@@ -5,8 +5,11 @@ Class PSProfileSyncGitHubClass
     [string]$UserName
     [string]$PATToken
     [string]$GistId
+    #TODO: PSFramework Settings
+    # --------------------------
     [string]$GistDescription = "..PSPROFILESYNC"
     [string]$PSProfileGitAuthFilePath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
+    # --------------------------
 
     [Object[]] CallGitHubApiGET([string]$Uri, [MethodEnum]$Method)
     {
