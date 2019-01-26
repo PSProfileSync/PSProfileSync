@@ -1,11 +1,26 @@
 function Push-PSProfile
 {
-    $objProfileClass = [PSProfileSyncProfilesClass]::new()
+    param
+    (
+        # the github username
+        [Parameter(Mandatory)]
+        [string]
+        $UserName,
+
+        # the github pattoken
+        [Parameter(Mandatory)]
+        [string]
+        $PATToken
+    )
+
+    <# $objProfileClass = [PSProfileSyncProfilesClass]::new()
     $objModulesClass = [PSProfileSyncModulesClass]::new()
     $objHelperClass = [PSProfileSyncHelperClass]::new()
     $objRepositoryClass = [PSProfileSyncRepositoriesClass]::new()
     $objGitHubClass = [PSProfileSyncGitHubClass]::new()
-    $objGitHubClass.AuthenticationPrereqs()
+     #>
+    Initialize-PSAuthentication -PATToken $PATToken -UserName $UserName
+    #$objGitHubClass.AuthenticationPrereqs()
 
     # Calculate Freespace on SystemDrive
     $objModulesClass.SavePSProfileSyncUploadSize()
