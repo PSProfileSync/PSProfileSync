@@ -1,4 +1,4 @@
-function New-PSPPesterTestFiles
+function New-PSPesterTestFiles
 {
     <#
         .SYNOPSIS
