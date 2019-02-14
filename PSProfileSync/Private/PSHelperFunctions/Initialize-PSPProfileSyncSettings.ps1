@@ -132,7 +132,7 @@ function Initialize-PSPProfileSyncSettings
         Module      = 'PSProfileSync'
         Name        = "repository.encodedpsgallerypath"
         Validation  = 'string'
-        Value       = "$env:APPDATA\PSProfileSync\PSGallery.json"
+        Value       = "$env:APPDATA\PSProfileSync\PSGallery.txt"
         Description = "The encoded json file with all inventoried repositories in It."
         Initialize  = $true
     }
