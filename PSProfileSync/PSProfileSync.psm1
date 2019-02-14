@@ -14,4 +14,4 @@ ForEach ($folder in $functionFolders)
     }
 }
 
-Initialize-PSProfileSyncSettings
+Initialize-PSPProfileSyncSettings
