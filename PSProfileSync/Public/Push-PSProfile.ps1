@@ -13,36 +13,29 @@ function Push-PSProfile
         $PATToken
     )
 
-    <# $objProfileClass = [PSProfileSyncProfilesClass]::new()
-    $objModulesClass = [PSProfileSyncModulesClass]::new()
-    $objHelperClass = [PSProfileSyncHelperClass]::new()
-    $objRepositoryClass = [PSProfileSyncRepositoriesClass]::new()
-    $objGitHubClass = [PSProfileSyncGitHubClass]::new()
-     #>
     Initialize-PSAuthentication -PATToken $PATToken -UserName $UserName
-    #$objGitHubClass.AuthenticationPrereqs()
 
     # Calculate Freespace on SystemDrive
-    $objModulesClass.SavePSProfileSyncUploadSize()
-    $objProfileClass.SavePSProfileSyncUploadSize()
+    Save-PSPProfileSyncModuleUploadSize
+    Save-PSPProfileSyncProfileUploadSize
 
     # Repositories
-    $objRepositoryClass.SavePSRepositoriesToFile()
-    $objHelperClass.ExecuteEncodeCertUtil($objRepositoryClass.PSGalleryPath, $objRepositoryClass.EncodedPSGalleryPath)
+    Save-PSPRepositoriesToFile
+    Invoke-PSPEncodeGalleriesListAvailable
 
     # Modules
-    $objModulesClass.SavePSModulesToFile()
-    $objHelperClass.ExecuteEncodeCertUtil($objModulesClass.PSModulePath, $objModulesClass.EncodedPSModulePath)
-    $objHelperClass.ExecuteEncodeCertUtil($objModulesClass.PSModuleArchiveFolderPathZip, $objModulesClass.EncodedPSModuleArchiveFolderPathZip)
+    Save-PSPModulesToFile
+    Invoke-PSPEncodeModulesListAvailable
+    Invoke-PSPEncodeModuleArchive
 
     # Profiles
-    $objProfileClass.SavePSProfilesToFile()
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathWPS, $objProfileClass.EncodedPSProfilePathWPS)
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathPSCore, $objProfileClass.EncodedPSProfilePathPSCore)
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePathDevEnv, $objProfileClass.EncodedPSProfilePathDevEnv)
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfileWPSArchiveFolderPathZip, $objProfileClass.EncodedPSProfileWPSArchiveFolderPathZip)
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfilePSCoreArchiveFolderPathZip, $objProfileClass.EncodedPSProfilePSCoreArchiveFolderPathZip)
-    $objHelperClass.ExecuteEncodeCertUtil($objProfileClass.PSProfileDevEnvArchiveFolderPathZip, $objProfileClass.EncodedPSProfileDevEnvArchiveFolderPathZip)
+    Save-PSPProfilesToFile
+    Invoke-PSPEncodeWPSProfilePaths
+    Invoke-PSPEncodePSCoreProfilePaths
+    Invoke-PSPEncodeDevEnvProfilePaths
+    Invoke-PSPWPSProfileArchive
+    Invoke-PSPPSCoreProfileArchive
+    Invoke-PSPDevEnvProfileArchive
 
     # Upload to Gist
     $objGitHubClass.EditGitHubGist($objProfileClass.PSPProfileSyncProfileFolderSizePath)
