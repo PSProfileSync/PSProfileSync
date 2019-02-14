@@ -51,7 +51,7 @@
     # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
-    RequiredModules = @(
+    RequiredModules   = @(
         'PSFrameWork'
     )
 
@@ -59,14 +59,7 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    ScriptsToProcess  = @(
-        'Private\Enums\GitHubMethodEnum.ps1'
-        'Private\Classes\001-PSProfileSyncHelperClass.ps1'
-        'Private\Classes\002-PSProfileSyncModulesClass.ps1'
-        'Private\Classes\003-PSProfileSyncGitHubClass.ps1'
-        'Private\Classes\004-PSProfileSyncRepositoriesClass.ps1'
-        'Private\Classes\005-PSProfileSyncProfilesClass.ps1'
-    )
+    # ScriptsToProcess  = @()
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
@@ -85,13 +78,13 @@
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport   = '*'
+    #CmdletsToExport   = '*'
 
     # Variables to export from this module
-    VariablesToExport = '*'
+    #VariablesToExport = '*'
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = '*'
+    #AliasesToExport   = '*'
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
