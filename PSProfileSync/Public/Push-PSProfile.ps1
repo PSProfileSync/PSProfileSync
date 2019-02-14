@@ -13,7 +13,7 @@ function Push-PSProfile
         $PATToken
     )
 
-    Initialize-PSAuthentication -PATToken $PATToken -UserName $UserName
+    Initialize-PSPAuthentication -PATToken $PATToken -UserName $UserName
 
     # Calculate Freespace on SystemDrive
     Save-PSPProfileSyncModuleUploadSize
