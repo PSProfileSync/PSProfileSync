@@ -1,4 +1,4 @@
-function Save-PSPProfileSyncUploadSize
+function Save-PSPProfileSyncModuleUploadSize
 {
     $IncludedPSModulePaths = Get-PSFConfigValue -FullName "PSProfileSync.modules.includedpsmodulepaths"
     $PSPProfileSyncModulesFolderSizePath = Get-PSFConfigValue -FullName "PSProfileSync.modules.profilesyncmodulesfoldersizepath"
