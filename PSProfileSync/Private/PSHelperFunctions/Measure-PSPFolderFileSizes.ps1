@@ -1,4 +1,4 @@
-function Measure-PSFolderFileSizes
+function Measure-PSPFolderFileSizes
 {
     <#
         .SYNOPSIS

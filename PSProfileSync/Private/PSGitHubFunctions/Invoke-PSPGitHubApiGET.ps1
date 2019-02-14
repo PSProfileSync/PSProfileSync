@@ -1,9 +1,7 @@
-function Invoke-PSGitHubApiPOST
+function Invoke-PSPGitHubApiGET
 {
     [CmdletBinding()]
-    param
-    (
-        # the POST Uri
+    param (
         [Parameter(Mandatory)]
         [string]
         $Uri,
@@ -13,11 +11,6 @@ function Invoke-PSGitHubApiPOST
         [ValidateSet("GET", "POST", "PATCH")]
         [string]
         $Method,
-
-        # the body of the Uri call
-        [Parameter(Mandatory)]
-        [string]
-        $ApiBody,
 
         # the PATToken of the user
         [Parameter(Mandatory)]
@@ -34,13 +27,13 @@ function Invoke-PSGitHubApiPOST
     {
         $Token = ConvertTo-SecureString -String $PATToken -AsPlainText -Force
         $cred = New-Object -TypeName System.Management.Automation.PSCredential($UserName, $Token)
-        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Authentication Basic -Credential $cred -ContentType "application/json"
     }
     else
     {
         $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $UserName, $PATToken)))
         $Header = @{"Authorization" = ("Basic {0}" -f $base64AuthInfo)}
-        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Header -Body $ApiBody
+        $result = Invoke-RestMethod -Uri $Uri -Method $Method -Headers $Header
     }
 
     return $result

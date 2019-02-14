@@ -1,7 +1,7 @@
-function Import-PSGitAuthFile
+function Import-PSPGitAuthFile
 {
     # TODO: PSFramework settings entry (PSProfileGitAuthFilePath)
-    $PSProfileGitAuthFilePath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
+    $PSProfileGitAuthFilePath = Get-PSFConfigValue -FullName "PSProfileSync.git.profilegitauthfilepath"
 
     $XmlFile = Import-Clixml -Path $PSProfileGitAuthFilePath
 

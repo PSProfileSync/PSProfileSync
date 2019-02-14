@@ -1,4 +1,4 @@
-function Measure-PSFreeSpaceOnSystemDrive
+function Measure-PSPFreeSpaceOnSystemDrive
 {
     <#
         .SYNOPSIS

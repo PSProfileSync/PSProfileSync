@@ -1,4 +1,4 @@
-function New-PSGitAuthFile
+function New-PSPGitAuthFile
 {
     [CmdletBinding()]
     param
@@ -21,14 +21,14 @@ function New-PSGitAuthFile
     )
 
     # TODO: PSFramework settings entry (PSProfileGitAuthFilePath, PSProfileSyncPath)
-    $PSProfileGitAuthFilePath = "$env:APPDATA\PSProfileSync\GitAuthFile.xml"
-    $PSProfileSyncPath = "$env:APPDATA\PSProfileSync"
+    $PSProfileGitAuthFilePath = Get-PSFConfigValue -FullName "PSProfileSync.git.profilegitauthfilepath"
+    $PSProfileSyncPath = Get-PSFConfigValue -FullName "PSProfileSync.modules.psprofilesyncpath"
 
     If (-not(Test-Path -Path $PSProfileGitAuthFilePath))
     {
         New-Item -ItemType Directory -Force -Path $PSProfileSyncPath
     }
 
-    $AuthFileObject = New-PSAuthFileObject -GistId $GistId -PATToken $PATToken -UserName $UserName
+    $AuthFileObject = New-PSPAuthFileObject -GistId $GistId -PATToken $PATToken -UserName $UserName
     $AuthFileObject | Export-Clixml -Path $PSProfileGitAuthFilePath -Force
 }

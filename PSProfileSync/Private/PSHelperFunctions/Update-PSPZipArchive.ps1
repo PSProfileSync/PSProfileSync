@@ -1,4 +1,4 @@
-function Update-PSZipArchive
+function Update-PSPZipArchive
 {
     <#
         .SYNOPSIS

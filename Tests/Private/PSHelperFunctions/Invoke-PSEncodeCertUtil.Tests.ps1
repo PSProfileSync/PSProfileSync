@@ -18,7 +18,7 @@ InModuleScope PSProfileSync {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"
             Mock -CommandName "Start-Process" -MockWith {}
-            $returnvalue = Invoke-PSEncodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
+            $returnvalue = Invoke-PSPEncodeCertUtil -SourcePath $Sourcepath -TargetPath $Targetpath
             {$returnvalue} | Should -Not -Throw
             Assert-MockCalled -CommandName "Start-Process" -Exactly 1
         }

@@ -1,4 +1,4 @@
-function Initialize-PSAuthentication
+function Initialize-PSPAuthentication
 {
     [CmdletBinding()]
     param
@@ -18,28 +18,28 @@ function Initialize-PSAuthentication
     # If not we have to check if gist exists.
     # If thats the case we get the gist id and create a new authfile.
     # If not we have to create a new gist get the gistid and create a new authfile.
-    if (Test-PSForGitAuthFile)
+    if (Test-PSPForGitAuthFile)
     {
-        Import-PSGitAuthFile
+        Import-PSPGitAuthFile
     }
     else
     {
         # TODO: Replace with PSFramwork (GistDescription)
-        $GistDescription = "..PSPROFILESYNC"
+        $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.git.gistdescription"
 
         # Test if gist already exist
         $Uri = ("https://api.github.com/users/{0}/gists" -f $UserName)
-        $AllUserGists = Invoke-PSGitHubApiGET -Uri $Uri -Method "GET" -PATToken $PATToken -UserName $UserName
+        $AllUserGists = Invoke-PSPGitHubApiGET -Uri $Uri -Method "GET" -PATToken $PATToken -UserName $UserName
 
-        $GistId = Search-PSGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
+        $GistId = Search-PSPGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
         if ($null -eq $GistId)
         {
-            $GistId = New-PSGitHubGist -UserName $UserName -PATToken $PATToken
-            New-PSGitAuthFile -GistId $GistId -PATToken $PATToken -UserName $UserName
+            $GistId = New-PSPGitHubGist -UserName $UserName -PATToken $PATToken
+            New-PSPGitAuthFile -GistId $GistId -PATToken $PATToken -UserName $UserName
         }
         else
         {
-            New-PSGitAuthFile -GistId $GistId -PATToken $PATToken -UserName $UserName
+            New-PSPGitAuthFile -GistId $GistId -PATToken $PATToken -UserName $UserName
         }
     }
 }

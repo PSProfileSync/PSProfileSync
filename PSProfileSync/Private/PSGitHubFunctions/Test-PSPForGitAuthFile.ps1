@@ -1,4 +1,4 @@
-function Test-PSForGitAuthFile
+function Test-PSPForGitAuthFile
 {
     [CmdletBinding()]
     param

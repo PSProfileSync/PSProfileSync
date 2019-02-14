@@ -1,4 +1,4 @@
-function ConvertTo-PSZipArchive
+function ConvertTo-PSPZipArchive
 {
     <#
         .SYNOPSIS

@@ -1,4 +1,4 @@
-function New-PSAuthFileObject
+function New-PSPAuthFileObject
 {
     [CmdletBinding()]
     param

@@ -1,4 +1,4 @@
-function New-PSGitHubGist
+function New-PSPGitHubGist
 {
     [CmdletBinding()]
     param
@@ -15,12 +15,12 @@ function New-PSGitHubGist
     )
 
     # TODO: Replace with PSFramwork
-    $GistDescription = "..PSPROFILESYNC"
+    $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.gist.gistdescription"
 
     # Test if gist already exist
     $Uri = ("https://api.github.com/users/{0}/gists" -f $UserName)
-    $AllUserGists = Invoke-PSGitHubApiGET -Uri $Uri -Method "GET" -PATToken $PATToken -UserName $UserName
-    $Gist = Search-PSGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
+    $AllUserGists = Invoke-PSPGitHubApiGET -Uri $Uri -Method "GET" -PATToken $PATToken -UserName $UserName
+    $Gist = Search-PSPGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
 
     if ($Gist)
     {
@@ -42,7 +42,7 @@ function New-PSGitHubGist
             }
         }
 
-        $GitHubApiResult = Invoke-PSGitHubApiPOST -Uri $Uri -Method "POST" -ApiBody $Body -PATToken $PATToken -UserName $UserName
+        $GitHubApiResult = Invoke-PSPGitHubApiPOST -Uri $Uri -Method "POST" -ApiBody $Body -PATToken $PATToken -UserName $UserName
         $GistId = $GitHubApiResult.id
         return $GistId
     }

@@ -1,4 +1,4 @@
-function Remove-PSEmptyFolder
+function Remove-PSPEmptyFolder
 {
     <#
         .SYNOPSIS

@@ -1,4 +1,4 @@
-function Initialize-PSProfileSyncSettings
+function Initialize-PSPProfileSyncSettings
 {
     #region Modules Config
     $setPSFConfigSplat = @{

@@ -1,4 +1,4 @@
-function Search-PSGitHubGist
+function Search-PSPGitHubGist
 {
     [CmdletBinding()]
     param

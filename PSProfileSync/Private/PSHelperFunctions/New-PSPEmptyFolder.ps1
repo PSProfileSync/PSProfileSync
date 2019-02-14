@@ -1,4 +1,4 @@
-function New-PSEmptyFolder
+function New-PSPEmptyFolder
 {
     <#
         .SYNOPSIS
