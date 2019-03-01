@@ -13,5 +13,26 @@ else
 }
 
 InModuleScope PSProfileSync {
+    $UserName = "testuser"
+    $PatToken = "00000"
+    $Uri = "http://test.io"
+    $Method = "Get"
 
+    Context "Get-PSPGitHubApiGET" {
+        It "Invoke-RestMethod GET Case works as expected" {
+
+            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+
+            $invokePSPGitHubApiGETSplat = @{
+                UserName = $UserName
+                Method   = $Method
+                PATToken = $PatToken
+                Uri      = $Uri
+            }
+            $result = Invoke-PSPGitHubApiGET @invokePSPGitHubApiGETSplat
+
+            $result | Should -Be "Success"
+            Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
+        }
+    }
 }
