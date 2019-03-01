@@ -24,13 +24,13 @@ function New-PSPGitHubGist
 
     if ($Gist)
     {
-        Write-Output -InputObject "Gist is already available. No action needed."
+        Write-PSFMessage -Message "Gist is already available. No action needed." -Level Output
         $GistId = $Gist.id
         return $GistId
     }
     else
     {
-        Write-Output -InputObject ("Creation of Gist {0} started." -f $GistDescription)
+        Write-PSFMessage -Message ("Creation of Gist {0} started." -f $GistDescription) -Level Output
         # Create the gist
         [HashTable]$Body = @{
             description = $GistDescription
