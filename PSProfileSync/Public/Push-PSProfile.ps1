@@ -13,7 +13,7 @@ function Push-PSProfile
         $PATToken
     )
 
-    Initialize-PSPAuthentication -PATToken $PATToken -UserName $UserName
+    Initialize-PSPAuthentication -UserName $UserName -PATToken $PATToken
 
     # Calculate Freespace on SystemDrive
     Save-PSPProfileSyncModuleUploadSize
@@ -38,15 +38,5 @@ function Push-PSProfile
     Invoke-PSPDevEnvProfileArchive
 
     # Upload to Gist
-    $objGitHubClass.EditGitHubGist($objProfileClass.PSPProfileSyncProfileFolderSizePath)
-    $objGitHubClass.EditGitHubGist($objModulesClass.PSPProfileSyncModulesFolderSizePath)
-    $objGitHubClass.EditGitHubGist($objRepositoryClass.EncodedPSGalleryPath)
-    $objGitHubClass.EditGitHubGist($objModulesClass.EncodedPSModulePath)
-    $objGitHubClass.EditGitHubGist($objModulesClass.EncodedPSModuleArchiveFolderPathZip)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathWPS)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathPSCore)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePathDevEnv)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfileWPSArchiveFolderPathZip)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfilePSCoreArchiveFolderPathZip)
-    $objGitHubClass.EditGitHubGist($objProfileClass.EncodedPSProfileDevEnvArchiveFolderPathZip)
+    Set-PSPProfileGitHubGist -UserName $UserName -PATToken $PATToken
 }
