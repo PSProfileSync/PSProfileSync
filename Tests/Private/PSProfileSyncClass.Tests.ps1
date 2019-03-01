@@ -21,53 +21,6 @@ InModuleScope PSProfileSync {
         $Uri = "http://test.io"
         $PSProfileSyncClass = [PSProfileSync]::new($UserName, $PatToken)
 
-        Context "CallGitHubApiGET" {
-            It "Invoke-RestMethod GET Case works as expected" {
-                $Method = "Get"
-                Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, $Method)
-                $result | Should -Be "Success"
-                Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
-            }
-        }
-
-        Context "CallGitHubApiPOST" {
-            It "Invoke-RestMethod POST/PATCH Case works as expected" {
-                $Method = "POST"
-                $Uri = "http://test.io"
-                $body = @{Test = "Test"}
-                $ApiBody = ConvertTo-Json -InputObject $body -Compress
-                Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-                $result = $PSProfileSyncClass.CallGitHubApiPOST($Uri, $Method, $ApiBody)
-                $result | Should -Be "Success"
-                Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
-            }
-        }
-
-        Context "CreateGitHubGist" {
-            It "Creates a GitHub gist successfully" {
-                Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
-                $result | Should -Be "Success"
-                Mock -CommandName Write-Output -MockWith {return $true}
-                $PSProfileSyncClass.CreateGitHubGist()
-                Assert-MockCalled -CommandName Write-Output -Exactly 1
-            }
-
-            It "GitHub gist exists already and returns a valid gist id" {
-                Mock -CommandName Invoke-RestMethod -MockWith {return @{
-                        description = "..PSProfileSync"
-                        id          = "00000"
-                    }
-                }
-                $result = $PSProfileSyncClass.CallGitHubApiGET($Uri, "Get")
-                $result | Should -Be $true
-                Mock -CommandName Write-Output -MockWith {"Write-Output was called"}
-                $result = $PSProfileSyncClass.CreateGitHubGist()
-                $result | Should -Be "00000"
-                Assert-MockCalled -CommandName Write-Output -Exactly 2
-            }
-        }
 
         Context "SearchGitHubGist" {
             It "Git Gist exists" {
