@@ -3,15 +3,15 @@ function Initialize-PSPAuthentication
     [CmdletBinding()]
     param
     (
-        # the PATToken of the user
-        [Parameter(Mandatory)]
-        [string]
-        $PATToken,
-
         # the github username
         [Parameter(Mandatory)]
         [string]
-        $UserName
+        $UserName,
+
+        # the PATToken of the user
+        [Parameter(Mandatory)]
+        [string]
+        $PATToken
     )
 
     # If GitAuthFile exists import It
