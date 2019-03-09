@@ -19,11 +19,12 @@ InModuleScope PSProfileSync {
     $Uri = "http://test.io"
 
     Context "Invoke-PSPGitHubApiPOST" {
-        It "Invoke-RestMethod POST/PATCH Case works as expected" {
+        It "Invoke-RestMethod POST/PATCH Case works as expected with Windows PowerShell 6" {
             $Method = "POST"
             $body = @{Test = "Test"}
             $ApiBody = ConvertTo-Json -InputObject $body -Compress
             Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith {6}
 
             $invokePSPGitHubApiPOSTSplat = @{
                 UserName = $UserName
@@ -36,6 +37,26 @@ InModuleScope PSProfileSync {
 
             $result | Should -Be "Success"
             Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
+        }
+
+        It "Invoke-RestMethod POST/PATCH Case works as expected with Windows PowerShell 5" {
+            $Method = "POST"
+            $body = @{Test = "Test"}
+            $ApiBody = ConvertTo-Json -InputObject $body -Compress
+            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith {5}
+
+            $invokePSPGitHubApiPOSTSplat = @{
+                UserName = $UserName
+                PATToken = $PatToken
+                Method   = $Method
+                ApiBody  = $ApiBody
+                Uri      = $Uri
+            }
+            $result = Invoke-PSPGitHubApiPOST @invokePSPGitHubApiPOSTSplat
+
+            $result | Should -Be "Success"
+            Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 2
         }
     }
 }

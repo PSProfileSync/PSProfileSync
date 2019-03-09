@@ -13,15 +13,9 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "New-PSPAuthFileObject" {
-
-        $UserName = "testuser"
-        $PatToken = "00000"
-        $GistId = "3467834879589764235897"
-
-        It "Method returns a PSCustomObject" {
-            $return = New-PSPAuthFileObject -GistId $GistId -PATToken $PatToken -UserName $UserName
-            $return | Should -BeOfType System.Management.Automation.PSCustomObject
+    Context "Get-PSPMajorPSVersion" {
+        It "Function returns Int as datatype" {
+            Get-PSPMajorPSVersion | Should -BeOfType System.Int32
         }
     }
 }

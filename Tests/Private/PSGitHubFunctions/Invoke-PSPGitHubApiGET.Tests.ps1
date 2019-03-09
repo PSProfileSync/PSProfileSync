@@ -19,9 +19,10 @@ InModuleScope PSProfileSync {
     $Method = "Get"
 
     Context "Get-PSPGitHubApiGET" {
-        It "Invoke-RestMethod GET Case works as expected" {
+        It "Invoke-RestMethod GET Case works as expected in PowerShell 6" {
 
             Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith {6}
 
             $invokePSPGitHubApiGETSplat = @{
                 UserName = $UserName
@@ -33,6 +34,23 @@ InModuleScope PSProfileSync {
 
             $result | Should -Be "Success"
             Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
+        }
+
+        It "Invoke-RestMethod GET Case works as expected in PowerShell 5" {
+
+            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith {5}
+
+            $invokePSPGitHubApiGETSplat = @{
+                UserName = $UserName
+                Method   = $Method
+                PATToken = $PatToken
+                Uri      = $Uri
+            }
+            $result = Invoke-PSPGitHubApiGET @invokePSPGitHubApiGETSplat
+
+            $result | Should -Be "Success"
+            Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 2
         }
     }
 }

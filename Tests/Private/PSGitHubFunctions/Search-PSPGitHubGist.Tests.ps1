@@ -13,5 +13,22 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Search-PSPGitHubGist" {
 
+        $GistExist = [System.Object]@{
+            Description = "..PSProfileSync"
+        }
+
+        $GistDescription = "..PSProfileSync"
+
+        It "Git Gist exists" {
+            $return = Search-PSPGitHubGist -AllUserGists $GistExist -GistDescription $GistDescription
+            $return | Should -BeOfType System.Object
+        }
+
+        It "Git Gist does not exist" {
+            $return = Search-PSPGitHubGist -AllUserGists $GistExist -GistDescription "test"
+            $return | Should -BeNullOrEmpty
+        }
+    }
 }

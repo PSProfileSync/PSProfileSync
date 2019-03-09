@@ -13,5 +13,30 @@ else
 }
 
 InModuleScope PSProfileSync {
+    $UserName = "testuser"
+    $PatToken = "00000"
+    $GistId = "3467834879589764235897"
 
+    Context "Get-PSPGitHubGistId" {
+        It "Returns a gistid" {
+
+            $obj = [PSCustomObject]@{
+                AllUserGists    = [PSCustomObject]@{
+                    description = "..PSProfileSync"
+                }
+                GistDescription = "..PSProfileSync"
+            }
+
+            Mock -CommandName Get-PSFConfigValue -MockWith {"..PSProfileSync"}
+            Mock -CommandName Invoke-PSPGitHubApiGET -MockWith {return $obj}
+            Mock -CommandName Search-PSPGitHubGist -MockWith {
+                [PSCustomObject]@{
+                    id = "3467834879589764235897"
+                }
+            }
+
+            $result = Get-PSPGitHubGistId -UserName $UserName -PATToken $PatToken
+            $result | Should -Be $GistId
+        }
+    }
 }
