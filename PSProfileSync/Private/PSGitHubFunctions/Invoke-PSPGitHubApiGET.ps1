@@ -23,7 +23,9 @@ function Invoke-PSPGitHubApiGET
         $UserName
     )
 
-    if (($PSVersionTable.PSVersion.Major) -eq 6)
+    $Version = Get-PSPMajorPSVersion
+
+    if ($Version -eq 6)
     {
         $Token = ConvertTo-SecureString -String $PATToken -AsPlainText -Force
         $cred = New-Object -TypeName System.Management.Automation.PSCredential($UserName, $Token)
