@@ -31,8 +31,8 @@ function Update-PSPZipArchive
 
         [Parameter(Mandatory)]
         [string]
-        $SourePath
+        $SourcePath
     )
 
-    Compress-Archive -Path $SourePath -Update -DestinationPath $ZipPath
+    Compress-Archive -Path $SourcePath -Update -DestinationPath $ZipPath
 }
