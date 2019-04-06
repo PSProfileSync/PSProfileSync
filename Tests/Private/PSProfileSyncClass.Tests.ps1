@@ -21,34 +21,6 @@ InModuleScope PSProfileSync {
         $Uri = "http://test.io"
         $PSProfileSyncClass = [PSProfileSync]::new($UserName, $PatToken)
 
-        Context "GetPSRepository" {
-            It "Gets an object back" {
-                $obj = New-MockObject -Type System.Object
-                Mock -CommandName "Get-PSRepository" -MockWith {
-                    return $obj
-                }
-
-                $returnvalue = $PSProfileSyncClass.GetPSRepository()
-                $returnvalue | Should -BeOfType System.Object
-                Assert-MockCalled -CommandName "Get-PSRepository" -Exactly 1
-            }
-        }
-
-        Context "SavePSRepositoriesToFile" {
-
-            Mock -CommandName "ConvertTo-Json" -MockWith {}
-            Mock -CommandName "Out-File" -MockWith {}
-
-            It "Method returns no errors" {
-                $returnvalue = $PSProfileSyncClass.SavePSRepositoriesToFile()
-                { $returnvalue } | Should -Not -Throw
-                if ($returnvalue)
-                {
-                    Assert-MockCalled -CommandName ConvertTo-Json -Exactly 1
-                }
-            }
-        }
-
         Context "ConverttoZipArchive" {
             It "Converts the files to a zip archive" {
                 $Sourcepath = "Sourcepath"
