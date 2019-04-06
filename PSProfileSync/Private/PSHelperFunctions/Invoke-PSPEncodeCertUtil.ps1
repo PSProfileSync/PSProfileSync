@@ -27,12 +27,12 @@ function Invoke-PSPEncodeCertUtil
     (
         [Parameter(Mandatory)]
         [string]
-        $SourePath,
+        $SourcePath,
 
         [Parameter(Mandatory)]
         [string]
         $TargetPath
     )
 
-    Start-Process -FilePath "$env:windir\System32\certutil.exe" -ArgumentList "-encode", $SourePath, $TargetPath
+    Start-Process -FilePath "$env:windir\System32\certutil.exe" -ArgumentList "-encode", $SourcePath, $TargetPath
 }
