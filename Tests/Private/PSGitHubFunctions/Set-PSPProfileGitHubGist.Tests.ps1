@@ -14,4 +14,23 @@ else
 
 InModuleScope PSProfileSync {
 
+    $UserName = "testuser"
+    $PatToken = "00000"
+
+    Context "Set-PSPProfileGitHubGist" {
+        It "Upload is OK" {
+            Mock -CommandName "Get-PSFConfigValue" -MockWith {
+                return "EncodedPSGalleryPath"
+            }
+            Mock -CommandName "Get-PSPGitHubGistId" -MockWith {
+                return "123223"
+            }
+            Mock -CommandName "Edit-PSPGitHubGist" -MockWith { }
+
+            Set-PSPProfileGitHubGist -UserName $UserName -PATToken $PatToken
+
+            Assert-MockCalled -CommandName "Get-PSFConfigValue" -Exactly 11
+            Assert-MockCalled -CommandName "Get-PSPGitHubGistId" -Exactly 1
+        }
+    }
 }
