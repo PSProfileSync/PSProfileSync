@@ -18,7 +18,7 @@ InModuleScope PSProfileSync {
     $Uri = "http://test.io"
     $Method = "Get"
 
-    Context "Get-PSPGitHubApiGET" {
+    Context "Invoke-PSPGitHubApiGET" {
         It "Invoke-RestMethod GET Case works as expected in PowerShell 6" {
 
             Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
