@@ -16,6 +16,8 @@ function Measure-PSPFreeSpaceOnSystemDrive
         Date: 20.01.2019
     #>
 
-    [uint64]$freespace = (Get-Volume -DriveLetter $env:SystemDrive).SizeRemaining
+    $SystemDrive = $env:SystemDrive.Replace(":","")
+
+    [uint64]$freespace = (Get-Volume -DriveLetter "$SystemDrive").SizeRemaining
     return $freespace
 }
