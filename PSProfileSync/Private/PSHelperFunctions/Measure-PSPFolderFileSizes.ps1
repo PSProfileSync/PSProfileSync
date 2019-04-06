@@ -31,7 +31,7 @@ function Measure-PSPFolderFileSizes
     )
 
     [uint64]$Foldersize = 0
-    foreach ($Folder in $FolderPaths)
+    foreach ($Folder in $FolderPath)
     {
         $Foldersize += ((Get-ChildItem -Path $Folder -Recurse | Measure-Object -Property length -Sum).sum)
     }
