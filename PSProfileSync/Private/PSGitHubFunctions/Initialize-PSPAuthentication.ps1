@@ -14,17 +14,20 @@ function Initialize-PSPAuthentication
         $PATToken
     )
 
+    # Get the configvalue for the path of the Git Authfile
+    $PathAuthFile = Get-PSFConfigValue -FullName "psprofilesync.git.profilegitauthfilepath"
+
     # If GitAuthFile exists import It
     # If not we have to check if gist exists.
     # If thats the case we get the gist id and create a new authfile.
     # If not we have to create a new gist get the gistid and create a new authfile.
-    if (Test-PSPForGitAuthFile)
+    if (Test-PSPForGitAuthFile -PathAuthFile $PathAuthFile)
     {
         Import-PSPGitAuthFile
     }
     else
     {
-        # TODO: Replace with PSFramwork (GistDescription)
+        # Get the GistDescription
         $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.git.gistdescription"
 
         # Test if gist already exist
