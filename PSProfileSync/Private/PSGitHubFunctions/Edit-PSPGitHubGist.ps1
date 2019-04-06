@@ -1,4 +1,4 @@
-function Edit-PSGitHubGist
+function Edit-PSPGitHubGist
 {
     [CmdletBinding()]
     param
@@ -50,7 +50,7 @@ function Edit-PSGitHubGist
         else
         {
             $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $UserName, $PATToken)))
-            $Header = @{"Authorization" = ("Basic {0}" -f $base64AuthInfo)}
+            $Header = @{"Authorization" = ("Basic {0}" -f $base64AuthInfo) }
             Invoke-RestMethod -Uri $Uri -Method "PATCH" -Headers $Header -Body $ApiBody
         }
     }
