@@ -13,5 +13,22 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Get-PSPRepository" {
 
+        $ExcludendRepos = @(
+            "Test"
+            "Test1"
+        )
+
+        It "Gets an object back" {
+            $obj = New-MockObject -Type System.Object
+            Mock -CommandName "Get-PSRepository" -MockWith {
+                return $obj
+            }
+
+            $returnvalue = Get-PSPRepository -ExcludedRepositories $ExcludendRepos
+            $returnvalue | Should -BeOfType System.Object
+            Assert-MockCalled -CommandName "Get-PSRepository" -Exactly 1
+        }
+    }
 }

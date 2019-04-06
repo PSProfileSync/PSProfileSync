@@ -13,5 +13,17 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Invoke-PSPEncodeGalleriesListAvailable" {
+        It "Encodes all Galleries" {
+            Mock -CommandName "Get-PSFConfigValue" -MockWith {
+                return "somefile"
+            }
+            Mock -CommandName "Invoke-PSPEncodeCertUtil" -MockWith { }
 
+            Invoke-PSPEncodeGalleriesListAvailable
+
+            Assert-MockCalled -CommandName "Get-PSFConfigValue" -Exactly 2
+            Assert-MockCalled -CommandName "Invoke-PSPEncodeCertUtil" -Exactly 1
+        }
+    }
 }
