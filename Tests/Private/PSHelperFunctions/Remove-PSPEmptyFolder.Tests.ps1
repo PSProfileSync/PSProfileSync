@@ -13,5 +13,16 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Remove-PSPEmptyFolder" {
 
+        $FolderName = "C:\SomeFolder"
+
+        It "Removes the folder" {
+            Mock -CommandName "Remove-Item" -MockWith { }
+
+            Remove-PSPEmptyFolder -FolderName $FolderName
+
+            Assert-MockCalled -CommandName "Remove-Item" -Exactly 1
+        }
+    }
 }

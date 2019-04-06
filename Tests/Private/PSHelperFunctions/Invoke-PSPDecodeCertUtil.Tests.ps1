@@ -13,7 +13,7 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "ExecuteDecodeCertUtil" {
+    Context "Invoke-PSPDecodeCertUtil" {
         It "Decodes a file back to the original" {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"

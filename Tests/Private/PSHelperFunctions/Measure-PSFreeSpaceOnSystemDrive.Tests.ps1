@@ -13,5 +13,16 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Measure-PSPFreeSpaceOnSystemDrive" {
+        It "Returns a uint64" {
+            Mock -CommandName "Get-Volume" -MockWith {
+                return 402993303552
+            }
 
+            $retval = Measure-PSPFreeSpaceOnSystemDrive
+
+            $retval | Should -BeOfType System.uint64
+            Assert-MockCalled -CommandName Get-Volume -Exactly 1
+        }
+    }
 }

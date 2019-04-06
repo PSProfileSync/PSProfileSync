@@ -13,5 +13,13 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Get-PSPAllProfileSyncConfigValues" {
+        It "Function runs" {
+            Mock -CommandName Get-PSFConfig -MockWith { }
 
+            Get-PSPAllProfileSyncConfigValues
+
+            Assert-MockCalled -CommandName Get-PSFConfig -Exactly 1
+        }
+    }
 }

@@ -13,5 +13,15 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Initialize-PSPProfileSyncSettings" {
+        It "All values are initialized" {
+            Mock -CommandName "Set-PSFConfig" -MockWith { }
+            Mock -CommandName "Get-PSFConfigValue" -MockWith { }
 
+            Initialize-PSPProfileSyncSettings
+
+            Assert-MockCalled -CommandName "Set-PSFConfig" -Exactly 34
+            Assert-MockCalled -CommandName "Get-PSFConfigValue" -Exactly 1
+        }
+    }
 }

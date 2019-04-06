@@ -13,5 +13,17 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Update-PSPZipArchive" {
 
+        $ZipPath = "TestDrive:\SomeZip.zip"
+        $SourcePath = "TestDrive:\SomeFile"
+
+        It "It updates the Archive" {
+            Mock -CommandName "Compress-Archive" -MockWith { }
+
+            Update-PSPZipArchive -ZipPath $ZipPath -SourcePath $SourcePath
+
+            Assert-MockCalled -CommandName "Compress-Archive" -Exactly 1
+        }
+    }
 }

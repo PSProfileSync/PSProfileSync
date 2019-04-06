@@ -13,7 +13,7 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "ExecuteEncodeCertUtil" {
+    Context "Invoke-PSPEncodeCertUtil" {
         It "Encodes a file to a certificate" {
             $Sourcepath = "Sourcepath"
             $Targetpath = "Targetpath"
