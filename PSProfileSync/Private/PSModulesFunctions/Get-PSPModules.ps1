@@ -41,11 +41,12 @@ function Get-PSPModules
 
             if ($ModulesInPath -eq $null)
             {
+                return $null
                 #TODO: Logfile
             }
             else
             {
-                $AllModules.Add($ModulesInPath)
+                $null = $AllModules.Add($ModulesInPath)
 
                 foreach ($Module in $ModulesInPath)
                 {
