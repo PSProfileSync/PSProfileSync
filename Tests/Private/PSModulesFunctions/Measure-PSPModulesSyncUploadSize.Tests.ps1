@@ -13,5 +13,23 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Measure-PSPModulesSyncUploadSize" {
 
+        $IncludedPSModulePaths = @(
+            "TestDrive:\SomeModule"
+            "TestDrive:\SomeModule1"
+        )
+
+        It "Measures the uploadsize correctly" {
+            Mock -CommandName "Measure-PSPFolderFileSizes" -MockWith {
+                return 84576
+            }
+
+            $retval = Measure-PSPModulesSyncUploadSize -IncludedPSModulePaths $IncludedPSModulePaths
+
+            $retval | Should -BeOfType System.Management.Automation.PSCustomObject
+
+            Assert-MockCalled -CommandName "Measure-PSPFolderFileSizes" -Exactly 1
+        }
+    }
 }

@@ -13,5 +13,22 @@ else
 }
 
 InModuleScope PSProfileSync {
+    Context "Save-PSPProfileSyncModuleUploadSize" {
+        It "Saves to File correctly" {
+            Mock -CommandName "Get-PSFConfigValue" -MockWith {
+                return "TestDrive:\SomeFolder"
+            }
+            Mock -CommandName "Measure-PSPModulesSyncUploadSize" -MockWith {
+                return 845697
+            }
+            Mock -CommandName "ConvertTo-Json" -MockWith { }
+            Mock -CommandName "Out-File" -MockWith { }
 
+            Save-PSPProfileSyncModuleUploadSize
+
+            Assert-MockCalled -CommandName "Get-PSFConfigValue" -Exactly 2
+            Assert-MockCalled -CommandName "Measure-PSPModulesSyncUploadSize" -Exactly 1
+            Assert-MockCalled -CommandName "ConvertTo-Json" -Exactly 1
+        }
+    }
 }
