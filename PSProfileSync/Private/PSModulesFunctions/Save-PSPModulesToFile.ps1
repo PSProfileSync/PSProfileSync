@@ -1,10 +1,5 @@
 function Save-PSPModulesToFile
 {
-    [CmdletBinding()]
-    param (
-
-    )
-
     $PSModulePath = Get-PSFConfigValue -FullName "PSProfileSync.modules.modulepath"# all included psmodulepaths
     $IncludedPSModulePaths = Get-PSFConfigValue -FullName "PSProfileSync.modules.includedpsmodulepaths"
     $ExcludedModules = Get-PSFConfigValue -FullName "PSProfileSync.modules.excludedmodules"
@@ -21,7 +16,7 @@ function Save-PSPModulesToFile
 
     if ($Modules -eq $null)
     {
-        #TODO: Logfile
+        return $null
     }
     else
     {
