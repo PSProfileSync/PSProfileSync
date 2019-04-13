@@ -15,7 +15,7 @@ function Initialize-PSPProfileSyncSettings
         Module      = 'PSProfileSync'
         Name        = "modules.mydocumentspath"
         Validation  = 'string'
-        Value       = "$env:APPDATA\PSProfileSync"
+        Value       = ("{0}" -f [System.Environment]::GetFolderPath("MyDocuments"))
         Description = "The MyDocuments path that Is needed for PSProfileSync."
         Initialize  = $true
     }
