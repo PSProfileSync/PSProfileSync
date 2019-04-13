@@ -29,7 +29,7 @@ InModuleScope PSProfileSync {
             Assert-MockCalled -CommandName "Get-PSPModules" -Exactly 1
         }
 
-        It "Saves Modules to file correctly: No modules were returned" {
+        It "Saves Modules to file correctly: modules were returned" {
             Mock -CommandName "Get-PSFConfigValue" -MockWith {
                 return "TestDrive:\SomeFolder"
             }

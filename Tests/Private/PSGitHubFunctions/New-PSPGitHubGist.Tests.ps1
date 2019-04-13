@@ -18,12 +18,13 @@ InModuleScope PSProfileSync {
     $PatToken = "00000"
     $Uri = "http://test.io"
     $Method = "Get"
+    $GistDescription = "This is a description"
 
-    Mock -CommandName "Get-PSFConfigValue" -MockWith {"desc"}
+    Mock -CommandName "Get-PSFConfigValue" -MockWith { "desc" }
 
     Context "New-PSPGitHubGist" {
         It "New-PSPGitHubGist: Creates a GitHub gist successfully" {
-            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
+            Mock -CommandName Invoke-RestMethod -MockWith { "Success" }
 
             $invokePSPGitHubApiGETSplat = @{
                 UserName = $UserName
@@ -35,17 +36,18 @@ InModuleScope PSProfileSync {
 
             $result | Should -Be "Success"
 
-            Mock -CommandName "Write-PSFMessage" -MockWith {}
+            Mock -CommandName "Write-PSFMessage" -MockWith { }
 
             $newPSPGitHubGistSplat = @{
-                UserName = $UserName
-                PATToken = $PatToken
+                UserName        = $UserName
+                PATToken        = $PatToken
+                GistDescription = $GistDescription
             }
             $result = New-PSPGitHubGist @newPSPGitHubGistSplat
         }
 
         It "New-PSPGitHubGist: GitHub gist exists already and returns a valid gist id" {
-            Mock -CommandName Invoke-RestMethod -MockWith {return @{
+            Mock -CommandName Invoke-RestMethod -MockWith { return @{
                     description = "..PSProfileSync"
                     id          = "00000"
                 }
@@ -60,15 +62,16 @@ InModuleScope PSProfileSync {
             $result = Invoke-PSPGitHubApiGET @invokePSPGitHubApiGETSplat
             $result | Should -Be $true
 
-            Mock -CommandName "Write-PSFMessage" -MockWith {}
-            Mock -CommandName "Invoke-PSPGitHubApiPOST" -MockWith {return [PSCustomObject]@{
+            Mock -CommandName "Write-PSFMessage" -MockWith { }
+            Mock -CommandName "Invoke-PSPGitHubApiPOST" -MockWith { return [PSCustomObject]@{
                     id = "00000"
                 }
             }
 
             $newPSPGitHubGistSplat = @{
-                UserName = $UserName
-                PATToken = $PatToken
+                UserName        = $UserName
+                PATToken        = $PatToken
+                GistDescription = $GistDescription
             }
             $result = New-PSPGitHubGist @newPSPGitHubGistSplat
 

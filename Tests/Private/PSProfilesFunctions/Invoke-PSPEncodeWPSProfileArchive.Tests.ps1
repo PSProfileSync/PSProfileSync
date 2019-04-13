@@ -13,14 +13,14 @@ else
 }
 
 InModuleScope PSProfileSync {
-    Context "Invoke-PSPEncodePSCoreProfilePaths" {
+    Context "Invoke-PSPEncodeWPSProfileArchive" {
         It "Runs Cert Util correctly" {
             Mock -CommandName "Get-PSFConfigValue" -MockWith {
                 return "TestDrive:\SomeFolder"
             }
             Mock -CommandName "Invoke-PSPEncodeCertUtil" -MockWith { }
 
-            Invoke-PSPEncodePSCoreProfilePaths
+            Invoke-PSPEncodeWPSProfileArchive
 
             Assert-MockCalled -CommandName "Get-PSFConfigValue" -Exactly 2
             Assert-MockCalled -CommandName "Invoke-PSPEncodeCertUtil" -Exactly 1

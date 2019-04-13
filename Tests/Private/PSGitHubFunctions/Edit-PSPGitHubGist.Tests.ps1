@@ -21,10 +21,10 @@ InModuleScope PSProfileSync {
 
     Context "Edit-PSPGitHubGist" {
         It "Uploads a file correctly in PowerShell Core 6" {
-            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-            Mock -CommandName Get-PSPMajorPSVersion -MockWith {6}
-            Mock -CommandName Test-Path -MockWith {return $true}
-            Mock -CommandName Get-Content -MockWith {"This is text"}
+            Mock -CommandName Invoke-RestMethod -MockWith { "Success" }
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith { 6 }
+            Mock -CommandName Test-Path -MockWith { return $true }
+            Mock -CommandName Get-Content -MockWith { "This is text" }
 
             $editPSPGitHubGistSplat = @{
                 GistId   = $GistId
@@ -32,15 +32,15 @@ InModuleScope PSProfileSync {
                 UserName = $UserName
                 PATToken = $PatToken
             }
-            Edit-PSGitHubGist @editPSPGitHubGistSplat
+            Edit-PSPGitHubGist @editPSPGitHubGistSplat
             Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 1
         }
 
         It "Uploads a file correctly in PowerShell Core 5" {
-            Mock -CommandName Invoke-RestMethod -MockWith {"Success"}
-            Mock -CommandName Get-PSPMajorPSVersion -MockWith {5}
-            Mock -CommandName Test-Path -MockWith {return $true}
-            Mock -CommandName Get-Content -MockWith {"This is text"}
+            Mock -CommandName Invoke-RestMethod -MockWith { "Success" }
+            Mock -CommandName Get-PSPMajorPSVersion -MockWith { 5 }
+            Mock -CommandName Test-Path -MockWith { return $true }
+            Mock -CommandName Get-Content -MockWith { "This is text" }
 
             $editPSPGitHubGistSplat = @{
                 GistId   = $GistId
@@ -48,7 +48,7 @@ InModuleScope PSProfileSync {
                 UserName = $UserName
                 PATToken = $PatToken
             }
-            Edit-PSGitHubGist @editPSPGitHubGistSplat
+            Edit-PSPGitHubGist @editPSPGitHubGistSplat
             Assert-MockCalled -CommandName Invoke-RestMethod -Exactly 2
         }
     }
