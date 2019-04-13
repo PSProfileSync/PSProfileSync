@@ -11,14 +11,17 @@ function New-PSPGitHubGist
         # the PATToken of the user
         [Parameter(Mandatory)]
         [string]
-        $PATToken
-    )
+        $PATToken,
 
-    # TODO: Replace with PSFramwork
-    $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.gist.gistdescription"
+        # the description of the GitHubGist
+        [Parameter(Mandatory)]
+        [string]
+        $GistDescription
+    )
 
     # Test if gist already exist
     $Uri = ("https://api.github.com/users/{0}/gists" -f $UserName)
+    $Uri_create_gist = "https://api.github.com/gists"
     $AllUserGists = Invoke-PSPGitHubApiGET -Uri $Uri -Method "GET" -PATToken $PATToken -UserName $UserName
     $Gist = Search-PSPGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
 
@@ -42,7 +45,7 @@ function New-PSPGitHubGist
             }
         }
 
-        $GitHubApiResult = Invoke-PSPGitHubApiPOST -Uri $Uri -Method "POST" -ApiBody $Body -PATToken $PATToken -UserName $UserName
+        $GitHubApiResult = Invoke-PSPGitHubApiPOST -Uri $Uri_create_gist -Method "POST" -ApiBody ($Body | ConvertTo-Json) -PATToken $PATToken -UserName $UserName
         $GistId = $GitHubApiResult.id
         return $GistId
     }
