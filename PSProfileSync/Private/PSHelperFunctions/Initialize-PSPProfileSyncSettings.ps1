@@ -307,7 +307,8 @@ function Initialize-PSPProfileSyncSettings
         Value       = "$MyDocuments\WindowsPowerShell\profile.ps1",
         "$MyDocuments\WindowsPowerShell\Microsoft.PowerShell_profile.ps1",
         "$env:windir\System32\WindowsPowerShell\v1.0\Microsoft.PowerShell_profile.ps1",
-        "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1"
+        "$env:windir\System32\WindowsPowerShell\v1.0\profile.ps1",
+        "$MyDocuments\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
         Description = "All Windows PowerShell profile files that got inventoried."
         Initialize  = $true
     }
@@ -317,10 +318,11 @@ function Initialize-PSPProfileSyncSettings
         Module      = 'PSProfileSync'
         Name        = "profile.includedpsprofilepathspscore"
         Validation  = 'string'
-        Value       = "$MyDocuments\PowerShell\Microsoft.PowerShell_profile.ps1",
+        Value      = "$MyDocuments\PowerShell\Microsoft.PowerShell_profile.ps1",
         "$MyDocuments\PowerShell\profile.ps1",
         "$env:ProgramFiles\PowerShell\6\Microsoft.PowerShell_profile.ps1",
-        "$env:ProgramFiles\PowerShell\6\profile.ps1"
+        "$env:ProgramFiles\PowerShell\6\profile.ps1",
+        "$MyDocuments\PowerShell\Microsoft.PowerShell_profile.ps1"
         Description = "All PowerShell Core profile files that got inventoried."
         Initialize  = $true
     }
@@ -330,8 +332,9 @@ function Initialize-PSPProfileSyncSettings
         Module      = 'PSProfileSync'
         Name        = "profile.includedpsprofilepathsdevenv"
         Validation  = 'string'
-        Value       = "$MyDocuments\PowerShell\Microsoft.VSCode_profile.ps1",
-        "$MyDocuments\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1"
+        Value      = "$MyDocuments\PowerShell\Microsoft.VSCode_profile.ps1",
+        "$MyDocuments\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1",
+        "$MyDocuments\WindowsPowerShell\Microsoft.VSCode_profile.ps1"
         Description = "All PowerShell Core profile files that got inventoried."
         Initialize  = $true
     }
