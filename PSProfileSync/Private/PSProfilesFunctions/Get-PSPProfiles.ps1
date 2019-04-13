@@ -40,6 +40,7 @@ function Get-PSPProfiles
         {
             if (-not ( Test-Path -Path $Path ) )
             {
+                return $null
                 #TODO: Logfile
             }
             else
