@@ -33,7 +33,14 @@ function Measure-PSPFolderFileSizes
     [uint64]$Foldersize = 0
     foreach ($Folder in $FolderPath)
     {
-        $Foldersize += ((Get-ChildItem -Path $Folder -Recurse | Measure-Object -Property length -Sum).sum)
+        if (Test-Path -Path $Folder)
+        {
+            $Foldersize += ((Get-ChildItem -Path "$Folder\*" -Recurse | Measure-Object -Property length -Sum).sum)
+        }
+        else
+        {
+            Write-PSFMessage -Level Output -Message "Profile ($Folder) does not exist."
+        }
     }
     return $Foldersize
 }

@@ -20,18 +20,39 @@ InModuleScope PSProfileSync {
             "C:\SomeFolder1"
         )
 
-        It "Should be of type Int64" {
+        It "Should be of type Int64: Folders does exist" {
             Mock -CommandName "Get-ChildItem" -MockWith { }
             Mock -CommandName "Measure-Object" -MockWith {
                 return [PSCustomObject]@{
                     Sum = 89473059
                 }
             }
+            Mock -CommandName "Test-Path" -MockWith {
+                return $true
+            }
 
             $retval = Measure-PSPFolderFileSizes -FolderPath $FolderPath
 
             $retval | Should -BeOfType System.uint64
             Assert-MockCalled -CommandName "Get-ChildItem" -Exactly 2
+        }
+
+        It "Should be of type Int64: Folders does not exist" {
+            Mock -CommandName "Get-ChildItem" -MockWith { }
+            Mock -CommandName "Measure-Object" -MockWith {
+                return [PSCustomObject]@{
+                    Sum = 89473059
+                }
+            }
+            Mock -CommandName "Test-Path" -MockWith {
+                return $false
+            }
+            Mock -CommandName "Write-PSFMessage" -MockWith { }
+
+            $retval = Measure-PSPFolderFileSizes -FolderPath $FolderPath
+
+            $retval | Should -BeOfType System.uint64
+            Assert-MockCalled -CommandName "Write-PSFMessage" -Exactly 2
         }
     }
 }
