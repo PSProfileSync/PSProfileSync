@@ -37,7 +37,7 @@ function Initialize-PSPAuthentication
         $GistId = Search-PSPGitHubGist -AllUserGists $AllUserGists -GistDescription $GistDescription
         if ($null -eq $GistId)
         {
-            $GistId = New-PSPGitHubGist -UserName $UserName -PATToken $PATToken
+            $GistId = New-PSPGitHubGist -UserName $UserName -PATToken $PATToken -GistDescription $GistDescription
             New-PSPGitAuthFile -GistId $GistId -PATToken $PATToken -UserName $UserName
         }
         else
