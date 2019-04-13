@@ -23,7 +23,7 @@ function Initialize-PSPAuthentication
     # If not we have to create a new gist get the gistid and create a new authfile.
     if (Test-PSPForGitAuthFile -PathAuthFile $PathAuthFile)
     {
-        Import-PSPGitAuthFile
+        $retval = Import-PSPGitAuthFile
     }
     else
     {
