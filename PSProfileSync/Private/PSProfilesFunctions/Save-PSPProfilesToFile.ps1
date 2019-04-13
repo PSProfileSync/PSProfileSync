@@ -26,24 +26,25 @@ function Save-PSPProfilesToFile
     }
     $ProfilesWPS = Get-PSPProfiles @getPSPProfilesSplat
 
-    $getPSPProfilesSplat = @{
+    $getPSPProfilesPSCoreSplat = @{
         ZipName        = "ProfileArchivePSCore"
         FolderToRemove = $PSProfileArchivePSCoreFolderPath
         ZipFilePath    = $PSProfilePSCoreArchiveFolderPathZip
         ProfilePaths   = $IncludedPSProfilePathsPSCore
     }
-    $ProfilesWPS = Get-PSPProfiles @getPSPProfilesSplat
+    $ProfilesPSCore = Get-PSPProfiles @getPSPProfilesPSCoreSplat
 
-    $getPSPProfilesSplat = @{
+    $getPSPProfilesDevEnvSplat = @{
         ZipName        = "ProfileArchiveDevEnv"
         FolderToRemove = $PSProfileArchiveDevEnvFolderPath
         ZipFilePath    = $PSProfileDevEnvArchiveFolderPathZip
         ProfilePaths   = $IncludedPSProfilePathsDevEnv
     }
-    $ProfilesWPS = Get-PSPProfiles @getPSPProfilesSplat
+    $ProfilesDevEnv = Get-PSPProfiles @getPSPProfilesDevEnvSplat
 
     if ($ProfilesWPS.Count -eq 0)
     {
+        return $null
         #TODO: Logfile
     }
     else
@@ -53,6 +54,7 @@ function Save-PSPProfilesToFile
 
     if ($ProfilesPSCore.Count -eq 0)
     {
+        return $null
         #TODO: Logfile
     }
     else
@@ -62,6 +64,7 @@ function Save-PSPProfilesToFile
 
     if ($ProfilesDevEnv.Count -eq 0)
     {
+        return $null
         #TODO: Logfile
     }
     else
