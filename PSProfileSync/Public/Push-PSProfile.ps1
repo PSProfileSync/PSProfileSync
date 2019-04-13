@@ -33,8 +33,8 @@ function Push-PSProfile
     Invoke-PSPEncodeWPSProfilePaths
     Invoke-PSPEncodePSCoreProfilePaths
     Invoke-PSPEncodeDevEnvProfilePaths
-    Invoke-PSPWPSProfileArchive
-    Invoke-PSPPSCoreProfileArchive
+    Invoke-PSPEncodeWPSProfileArchive
+    Invoke-PSPEncodePSCoreProfileArchive
     Invoke-PSPDevEnvProfileArchive
 
     # Upload to Gist
