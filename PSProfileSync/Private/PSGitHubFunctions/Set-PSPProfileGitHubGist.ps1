@@ -14,17 +14,17 @@ function Set-PSPProfileGitHubGist
     )
 
     # Get all Config Values
-    $EncodedPSGalleryPath = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $PSPProfileSyncModulesFolderSizePath = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSModulePath = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSModuleArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
+    $EncodedPSGalleryPath = Get-PSFConfigValue -FullName "PSProfileSync.repository.encodedpsgallerypath"
+    $PSPProfileSyncModulesFolderSizePath = Get-PSFConfigValue -FullName "PSProfileSync.modules.profilesyncmodulesfoldersizepath"
+    $EncodedPSModulePath = Get-PSFConfigValue -FullName "PSProfileSync.modules.encodedpsmodulepath"
+    $EncodedPSModuleArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.modules.encodedpsmodulearchivefolderpathzip"
     $PSPProfileSyncProfileFolderSizePath = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfilePathWPS = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfilePathPSCore = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfilePathDevEnv = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfileWPSArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfilePSCoreArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
-    $EncodedPSProfileDevEnvArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.profilesyncprofilefoldersizepath"
+    $EncodedPSProfilePathWPS = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedprofilepathwps"
+    $EncodedPSProfilePathPSCore = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedprofilepathpscore"
+    $EncodedPSProfilePathDevEnv = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedprofilepathdevenv"
+    $EncodedPSProfileWPSArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedpsprofilewpsarchivefolderpathzip"
+    $EncodedPSProfilePSCoreArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedpsprofilepscorearchivefolderpathzip"
+    $EncodedPSProfileDevEnvArchiveFolderPathZip = Get-PSFConfigValue -FullName "PSProfileSync.profile.encodedpsprofiledevenvarchivefolderpathzip"
 
     # Get the GitHub Gist
     $GistId = Get-PSPGitHubGistId -UserName $UserName -PATToken $PATToken
