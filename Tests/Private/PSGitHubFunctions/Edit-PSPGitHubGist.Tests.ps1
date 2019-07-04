@@ -25,6 +25,7 @@ InModuleScope PSProfileSync {
             Mock -CommandName Get-PSPMajorPSVersion -MockWith { 6 }
             Mock -CommandName Test-Path -MockWith { return $true }
             Mock -CommandName Get-Content -MockWith { "This is text" }
+            Mock -CommandName Write-PSFMessage -MockWith { }
 
             $editPSPGitHubGistSplat = @{
                 GistId   = $GistId
@@ -41,6 +42,7 @@ InModuleScope PSProfileSync {
             Mock -CommandName Get-PSPMajorPSVersion -MockWith { 5 }
             Mock -CommandName Test-Path -MockWith { return $true }
             Mock -CommandName Get-Content -MockWith { "This is text" }
+            Mock -CommandName Write-PSFMessage -MockWith { }
 
             $editPSPGitHubGistSplat = @{
                 GistId   = $GistId
