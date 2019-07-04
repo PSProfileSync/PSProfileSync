@@ -33,7 +33,7 @@ function Get-PSPGitHubGistId
         $PATToken
     )
 
-    $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.gist.gistdescription"
+    $GistDescription = Get-PSFConfigValue -FullName "PSProfileSync.git.gistdescription"
 
     $Uri = ("https://api.github.com/users/{0}/gists" -f $UserName)
 
