@@ -45,13 +45,17 @@ function Edit-PSPGitHubGist
         {
             $Token = ConvertTo-SecureString -String $PATToken -AsPlainText -Force
             $cred = New-Object -TypeName System.Management.Automation.PSCredential($UserName, $Token)
-            Invoke-RestMethod -Uri $Uri -Method "PATCH" -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+            Write-PSFMessage -Level Output -Message "Going to upload file $FileName to your GitHub Gist."
+            $null = Invoke-RestMethod -Uri $Uri -Method "PATCH" -Body $ApiBody -Authentication Basic -Credential $cred -ContentType "application/json"
+            Write-PSFMessage -Level Output -Message "Finished uploading file $FileName to your GitHub Gist."
         }
         else
         {
             $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $UserName, $PATToken)))
             $Header = @{"Authorization" = ("Basic {0}" -f $base64AuthInfo) }
-            Invoke-RestMethod -Uri $Uri -Method "PATCH" -Headers $Header -Body $ApiBody
+            Write-PSFMessage -Level Output -Message "Going to upload file $FileName to your GitHub Gist."
+            $null = Invoke-RestMethod -Uri $Uri -Method "PATCH" -Headers $Header -Body $ApiBody
+            Write-PSFMessage -Level Output -Message "Finished uploading file $FileName to your GitHub Gist."
         }
     }
     else
